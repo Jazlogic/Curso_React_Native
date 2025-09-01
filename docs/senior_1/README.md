@@ -1,4 +1,4 @@
-# Módulo 8: Patrones de Diseño
+# 📚 Módulo 8: Patrones de Diseño
 
 ## Descripción
 Este módulo cubre los patrones de diseño más importantes en React Native, incluyendo patrones creacionales, estructurales y de comportamiento. Los estudiantes aprenderán a implementar soluciones reutilizables y escalables para problemas comunes de desarrollo.
@@ -77,10 +77,10 @@ Este módulo cubre los patrones de diseño más importantes en React Native, inc
 - **Contenido**: Clean Architecture, patrones compuestos, refactorización
 - **Archivo**: [clase_5_arquitectura_patrones_compuestos.md](clase_5_arquitectura_patrones_compuestos.md)
 
-## Navegación
-- **Anterior**: [Módulo 7: Testing y Debugging](../midLevel_4/README.md)
-- **Siguiente**: [Módulo 9: Arquitectura Avanzada](README.md)
-- **Inicio**: [Índice Completo](../../INDICE_COMPLETO.md)
+## 🧭 Navegación del Módulo
+- **⬅️ Anterior**: [Módulo 7: Almacenamiento Local](../midLevel_4/README.md)
+- **➡️ Siguiente**: [Módulo 9: Testing](../senior_2/README.md)
+- **🏠 [Volver al Inicio](../../README.md)**
 
 ## Recursos Adicionales
 - Documentación oficial de React Native

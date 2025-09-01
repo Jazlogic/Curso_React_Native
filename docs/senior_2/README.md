@@ -1,76 +1,129 @@
-# Módulo 10: Performance ✅
+# 📚 Módulo 9: Testing ✅
 
-## Descripción
-Optimización de rendimiento en React Native: memoización, lazy loading, profiling y mejores prácticas para apps móviles de alto rendimiento.
-
-## Estado del Módulo
-✅ **COMPLETADO** - Módulo completamente desarrollado
-
-## Clases del Módulo
-
-### ✅ Clase 1: Fundamentos de Performance
-- **Duración**: 1.5 horas
-- **Contenido**: Métricas de performance, profiling, herramientas de medición
-- **Archivo**: [clase_1_fundamentos_performance.md](clase_1_fundamentos_performance.md)
-
-### ✅ Clase 2: Optimización de Componentes
-- **Duración**: 2 horas
-- **Contenido**: React.memo, useMemo, useCallback, optimización de re-renders
-- **Archivo**: [clase_2_optimizacion_componentes.md](clase_2_optimizacion_componentes.md)
-
-### ✅ Clase 3: Optimización de Listas y Scroll
-- **Duración**: 2 horas
-- **Contenido**: FlatList optimizada, virtualización, lazy loading de imágenes
-- **Archivo**: [clase_3_optimizacion_listas_scroll.md](clase_3_optimizacion_listas_scroll.md)
-
-### ✅ Clase 4: Optimización de Navegación y Carga
-- **Duración**: 2 horas
-- **Contenido**: Lazy loading de pantallas, preloading, optimización de transiciones
-- **Archivo**: [clase_4_optimizacion_navegacion_carga.md](clase_4_optimizacion_navegacion_carga.md)
-
-### ✅ Clase 5: Performance Avanzada y Monitoreo
-- **Duración**: 1.5 horas
-- **Contenido**: Bundle splitting, code splitting, monitoreo en producción, métricas
-- **Archivo**: [clase_5_performance_avanzada_monitoreo.md](clase_5_performance_avanzada_monitoreo.md)
+## 🧭 Navegación del Módulo
+- **⬅️ Anterior**: [Módulo 8: Patrones de Diseño](../senior_1/README.md)
+- **➡️ Siguiente**: [Módulo 10: Performance](../senior_3/README.md)
+- **🏠 [Volver al Inicio](../../README.md)**
 
 ---
 
-# Módulo 11: APIs Nativas ✅
+## 🎯 Descripción del Módulo
 
-## Descripción
-Integración con APIs nativas del dispositivo: cámara, geolocalización, notificaciones push, sensores, y acceso a hardware del dispositivo.
+Este módulo te enseñará las técnicas más avanzadas de testing en React Native, desde testing unitario hasta testing E2E con Detox. Aprenderás a crear suites de testing robustas y mantener alta cobertura de código.
 
 ## Estado del Módulo
 ✅ **COMPLETADO** - Módulo completamente desarrollado
 
-## Clases del Módulo
+## 📚 Clases del Módulo
 
-### ✅ Clase 1: Fundamentos de APIs Nativas
+### ✅ **Clase 1: Fundamentos de Testing**
 - **Duración**: 1.5 horas
-- **Contenido**: Permisos, configuración de plataforma, manejo de errores nativos
-- **Archivo**: [clase_1_fundamentos_apis_nativas.md](clase_1_fundamentos_apis_nativas.md)
+- **Contenido**: Jest, Testing Library, configuración, primeros tests
+- **Archivo**: [clase_1_fundamentos_testing.md](clase_1_fundamentos_testing.md)
 
-### ✅ Clase 2: Cámara y Galería
+### ✅ **Clase 2: Testing de Componentes**
 - **Duración**: 2 horas
-- **Contenido**: Acceso a cámara, galería de fotos, captura de video, edición de imágenes
-- **Archivo**: [clase_2_camara_galeria.md](clase_2_camara_galeria.md)
+- **Contenido**: Renderizado, eventos, props, estado, mocking
+- **Archivo**: [clase_2_testing_componentes.md](clase_2_testing_componentes.md)
 
-### ✅ Clase 3: Geolocalización y Mapas
+### ✅ **Clase 3: Testing de Hooks**
 - **Duración**: 2 horas
-- **Contenido**: GPS, coordenadas, mapas interactivos, geocodificación
-- **Archivo**: [clase_3_geolocalizacion_mapas.md](clase_3_geolocalizacion_mapas.md)
+- **Contenido**: Custom hooks, useEffect, useState, testing de lógica
+- **Archivo**: [clase_3_testing_hooks.md](clase_3_testing_hooks.md)
 
-### ✅ Clase 4: Notificaciones Push y Locales
+### ✅ **Clase 4: Testing de Integración**
 - **Duración**: 2 horas
-- **Contenido**: Notificaciones push, notificaciones locales, badges, deep linking
-- **Archivo**: [clase_4_notificaciones_push_locales.md](clase_4_notificaciones_push_locales.md)
+- **Contenido**: APIs, navegación, estado global, testing de flujos
+- **Archivo**: [clase_4_testing_integracion.md](clase_4_testing_integracion.md)
 
-### ✅ Clase 5: Sensores y Hardware Avanzado
-- **Duración**: 1.5 horas
-- **Contenido**: Acelerómetro, giroscopio, brújula, vibración, linterna
-- **Archivo**: [clase_5_sensores_hardware_avanzado.md](clase_5_sensores_hardware_avanzado.md)
+### ✅ **Clase 5: Testing E2E con Detox**
+- **Duración**: 2.5 horas
+- **Contenido**: Configuración de Detox, testing de flujos completos, testing de performance
+- **Archivo**: [clase_5_testing_e2e_performance.md](clase_5_testing_e2e_performance.md)
 
-## Navegación
-- **Anterior**: [Módulo 10: Performance](../senior_2/README.md)
-- **Siguiente**: Módulo 12: Seguridad y Autenticación
-- **Inicio**: [Índice del Curso](../../INDICE_COMPLETO.md)
+---
+
+## 🎯 Objetivos del Módulo
+
+### **Al Finalizar Este Módulo Serás Capaz de:**
+1. **Configurar Jest** y Testing Library para React Native
+2. **Escribir tests unitarios** para componentes y hooks
+3. **Implementar testing de integración** para APIs y navegación
+4. **Configurar Detox** para testing E2E
+5. **Mantener alta cobertura** de código
+6. **Implementar TDD** (Test-Driven Development)
+
+---
+
+## 🚀 Proyecto Integrador del Módulo
+
+### **App con Suite Completa de Testing**
+
+Crea una aplicación que incluya una suite completa de testing:
+
+#### **Funcionalidades a Testear:**
+- ✅ **Componentes**: Todos los componentes con tests unitarios
+- ✅ **Hooks**: Custom hooks con testing completo
+- ✅ **APIs**: Testing de integración con APIs
+- ✅ **Navegación**: Testing de flujos de navegación
+- ✅ **E2E**: Testing completo de flujos de usuario
+
+#### **Requisitos Técnicos:**
+- **Cobertura mínima**: 90% del código
+- **Tests unitarios**: Para todos los componentes y hooks
+- **Tests de integración**: Para APIs y navegación
+- **Tests E2E**: Al menos 5 flujos de usuario completos
+- **CI/CD**: Integración con pipeline de testing
+
+---
+
+## 🛠️ Herramientas Utilizadas
+
+### **Testing Unitario:**
+- **Jest**: Framework de testing
+- **React Native Testing Library**: Testing de componentes
+- **@testing-library/react-hooks**: Testing de hooks
+
+### **Testing E2E:**
+- **Detox**: Framework de testing E2E para React Native
+- **Appium**: Alternativa para testing multiplataforma
+
+### **Cobertura y Reportes:**
+- **Jest Coverage**: Reportes de cobertura de código
+- **Detox Reports**: Reportes de testing E2E
+
+---
+
+## 📚 Recursos Adicionales
+
+### **Documentación Oficial:**
+- [Jest Documentation](https://jestjs.io/)
+- [React Native Testing Library](https://callstack.github.io/react-native-testing-library/)
+- [Detox Documentation](https://wix.github.io/Detox/)
+
+### **Artículos Recomendados:**
+- "Testing React Native Apps with Jest"
+- "End-to-End Testing with Detox"
+- "Testing Best Practices in React Native"
+
+---
+
+## 🎓 Próximos Pasos
+
+### **Después de Completar Este Módulo:**
+1. **Módulo 10**: Performance y Optimización
+2. **Módulo 11**: APIs Nativas
+3. **Módulo 12**: CI/CD y Deployment
+
+### **Habilidades Desarrolladas:**
+- ✅ Testing unitario completo
+- ✅ Testing de integración
+- ✅ Testing E2E con Detox
+- ✅ Alta cobertura de código
+- ✅ Implementación de TDD
+
+---
+
+**🎯 Objetivo**: Dominar todas las técnicas de testing en React Native y mantener alta calidad de código.
+
+**💡 Consejo**: Practica escribiendo tests para cada nueva funcionalidad. El testing es una inversión que se paga con creces en el largo plazo.

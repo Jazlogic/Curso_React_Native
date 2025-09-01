@@ -1,6 +1,13 @@
-# Módulo 16: Arquitecturas Empresariales ✅ 🏢
+# 📚 Módulo 16: Arquitecturas Empresariales ✅ 🏢
 
-## Descripción
+## 🧭 Navegación del Módulo
+- **⬅️ Anterior**: [Módulo 15: Testing Avanzado](../senior_8/README.md)
+- **➡️ Siguiente**: 🎉 ¡Fin del curso completado!
+- **🏠 [Volver al Inicio](../../README.md)**
+
+---
+
+## 🎯 Descripción del Módulo
 Implementación de arquitecturas empresariales escalables para aplicaciones React Native, incluyendo micro-frontends, feature flags, arquitecturas multi-tenant, sistemas event-driven y patrones de diseño empresariales avanzados.
 
 ## Estado del Módulo

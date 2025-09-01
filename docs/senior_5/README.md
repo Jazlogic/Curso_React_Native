@@ -1,84 +1,167 @@
-# Módulo 14: Seguridad ✅
+# 📚 Módulo 12: CI/CD y Deployment ✅ 🚀
 
-## Descripción
-Implementación de sistemas completos de seguridad para aplicaciones React Native, incluyendo autenticación, autorización, encriptación, protección de datos y mejores prácticas de seguridad.
-
-## Estado del Módulo
-✅ **COMPLETADO** - Módulo completamente desarrollado
-
-## Clases del Módulo
-
-### ✅ Clase 1: Fundamentos de Seguridad
-- **Duración**: 1.5 horas
-- **Contenido**: Conceptos básicos, amenazas comunes, principios de seguridad
-- **Archivo**: [clase_1_fundamentos_seguridad.md](clase_1_fundamentos_seguridad.md)
-
-### ✅ Clase 2: Autenticación y Autorización
-- **Duración**: 2 horas
-- **Contenido**: JWT, OAuth, roles y permisos, gestión de sesiones
-- **Archivo**: [clase_2_autenticacion_autorizacion.md](clase_2_autenticacion_autorizacion.md)
-
-### ✅ Clase 3: Encriptación y Protección de Datos
-- **Duración**: 2 horas
-- **Contenido**: Encriptación de datos, almacenamiento seguro, protección de API
-- **Archivo**: [clase_3_encriptacion_proteccion_datos.md](clase_3_encriptacion_proteccion_datos.md)
-
-### ✅ Clase 4: Seguridad de Red y API
-- **Duración**: 2 horas
-- **Contenido**: HTTPS, certificados SSL, protección contra ataques comunes
-- **Archivo**: [clase_4_seguridad_red_api.md](clase_4_seguridad_red_api.md)
-
-### ✅ Clase 5: Auditoría y Cumplimiento
-- **Duración**: 1.5 horas
-- **Contenido**: Logs de seguridad, auditoría, cumplimiento GDPR/CCPA
-- **Archivo**: [clase_5_auditoria_cumplimiento.md](clase_5_auditoria_cumplimiento.md)
-
-## Navegación
-
-### Navegación Secuencial
-- **Anterior**: [Módulo 13: Monitoreo](../senior_4/README.md)
-- **Siguiente**: Módulo 15: Testing Avanzado (pendiente)
-
-### Navegación Rápida
-- [🏠 Inicio del Curso](../../README.md)
-- [📚 Índice Completo](../../INDICE_COMPLETO.md)
-- [⚡ Navegación Rápida](../../NAVEGACION_RAPIDA.md)
-
-## Objetivos del Módulo
-
-Al completar este módulo, serás capaz de:
-
-1. **Comprender** los fundamentos de seguridad en aplicaciones móviles
-2. **Implementar** sistemas robustos de autenticación y autorización
-3. **Aplicar** técnicas de encriptación y protección de datos sensibles
-4. **Configurar** medidas de seguridad para redes y APIs
-5. **Establecer** sistemas de auditoría y cumplimiento normativo
-6. **Desarrollar** aplicaciones seguras siguiendo mejores prácticas
-
-## Prerrequisitos
-
-- ✅ Módulo 13: Monitoreo completado
-- ✅ Conocimientos sólidos de React Native
-- ✅ Comprensión de conceptos de redes y APIs
-- ✅ Familiaridad con conceptos básicos de seguridad
-
-## Proyecto del Módulo
-
-**App Segura**: Aplicación completa con sistema de seguridad implementado, incluyendo:
-- Autenticación multi-factor
-- Encriptación de datos sensibles
-- Protección de APIs
-- Sistema de auditoría
-- Cumplimiento de normativas de privacidad
-
-## Recursos Adicionales
-
-- [OWASP Mobile Security Testing Guide](https://owasp.org/www-project-mobile-security-testing-guide/)
-- [React Native Security Best Practices](https://reactnative.dev/docs/security)
-- [Firebase Security Rules](https://firebase.google.com/docs/rules)
-- [JWT.io](https://jwt.io/)
-- [GDPR Compliance Guide](https://gdpr.eu/)
+## 🧭 Navegación del Módulo
+- **⬅️ Anterior**: [Módulo 11: APIs Nativas](../senior_4/README.md)
+- **➡️ Siguiente**: [Módulo 13: Monitoreo y Analytics](../senior_6/README.md)
+- **🏠 [Volver al Inicio](../../README.md)**
 
 ---
 
-**Nota**: Este módulo es fundamental para cualquier aplicación que maneje datos sensibles o requiera autenticación de usuarios. La seguridad debe ser una prioridad desde el diseño inicial de la aplicación.
+## 🎯 Descripción del Módulo
+Este módulo te enseñará a configurar pipelines de CI/CD (Integración Continua/Despliegue Continuo) y a generar archivos APK/AAB para desplegar tu aplicación React Native en las tiendas de aplicaciones (Google Play Store y App Store).
+
+## 📋 Contenido del Módulo
+
+### 🎓 Clases Disponibles
+
+1. **[Clase 1: Fundamentos de CI/CD](clase_1_fundamentos_cicd.md)** ✅
+   - ¿Qué es CI/CD y por qué es importante?
+   - Herramientas y plataformas de CI/CD
+   - Configuración de pipelines automatizados
+   - Integración con repositorios Git
+
+2. **[Clase 2: Generación de APK/AAB](clase_2_generacion_apk_aab.md)** ✅
+   - Configuración de Gradle para builds
+   - Generación de APK de debug y release
+   - Creación de AAB (Android App Bundle)
+   - Firma de código y keystores
+
+3. **[Clase 3: Configuración de Builds](clase_3_configuracion_builds.md)** ✅
+   - Configuración de diferentes variantes de build
+   - Variables de entorno y configuración
+   - Optimización de builds para producción
+   - Manejo de dependencias y assets
+
+4. **[Clase 4: Despliegue Automatizado](clase_4_despliegue_automatizado.md)** ✅
+   - Configuración de Fastlane
+   - Automatización de despliegue a Google Play
+   - Integración con App Store Connect
+   - Rollbacks y versiones de emergencia
+
+5. **[Clase 5: Monitoreo y Métricas](clase_5_monitoreo_metricas.md)** ✅
+   - Monitoreo de builds y despliegues
+   - Métricas de rendimiento de la aplicación
+   - Alertas y notificaciones automáticas
+   - Análisis de crash reports en producción
+
+---
+
+## 🎯 Objetivos del Módulo
+
+Al completar este módulo serás capaz de:
+
+- ✅ **Configurar pipelines de CI/CD** completos para React Native
+- ✅ **Generar APKs y AABs** optimizados para producción
+- ✅ **Automatizar el proceso de build** y despliegue
+- ✅ **Implementar firmado de código** y gestión de keystores
+- ✅ **Desplegar automáticamente** a Google Play Store
+- ✅ **Monitorear y optimizar** el proceso de deployment
+
+---
+
+## 🛠️ Proyecto del Módulo
+
+### 🚀 Pipeline de CI/CD Completo
+
+**Descripción:** Configuración completa de un pipeline de CI/CD para una aplicación React Native.
+
+**Funcionalidades implementadas:**
+- 🔄 **Builds Automatizados**: Generación automática de APK/AAB en cada commit
+- 📱 **Testing Automatizado**: Ejecución de tests antes del despliegue
+- 🚀 **Despliegue Automático**: Despliegue automático a Google Play Store
+- 📊 **Monitoreo**: Dashboard de métricas y estado de builds
+- 🔒 **Seguridad**: Firma de código y gestión de keystores
+
+**Tecnologías utilizadas:**
+- GitHub Actions / GitLab CI / Jenkins
+- Fastlane para automatización
+- Gradle para builds de Android
+- Google Play Console API
+- Firebase App Distribution
+
+---
+
+## 🛠️ Herramientas y Tecnologías
+
+### 🔧 Herramientas de CI/CD
+- **GitHub Actions** - Pipelines de CI/CD integrados con GitHub
+- **GitLab CI** - Sistema de CI/CD de GitLab
+- **Jenkins** - Servidor de CI/CD open source
+- **CircleCI** - Plataforma de CI/CD en la nube
+
+### 📱 Herramientas de Build
+- **Gradle** - Sistema de build para Android
+- **Fastlane** - Automatización de despliegue
+- **Bundler** - Gestión de dependencias de Ruby
+- **CocoaPods** - Gestor de dependencias para iOS
+
+### 🚀 Herramientas de Despliegue
+- **Google Play Console** - Despliegue a Google Play Store
+- **App Store Connect** - Despliegue a App Store
+- **Firebase App Distribution** - Distribución de builds de testing
+- **TestFlight** - Testing de aplicaciones iOS
+
+---
+
+## 📚 Recursos Adicionales
+
+### 📖 Documentación Oficial
+- [React Native Building for Production](https://reactnative.dev/docs/signed-apk-android)
+- [Android App Bundle](https://developer.android.com/guide/app-bundle)
+- [Fastlane Documentation](https://docs.fastlane.tools/)
+
+### 🎥 Videos y Tutorials
+- [Setting up CI/CD for React Native](https://www.youtube.com/watch?v=CI_CD_Setup)
+- [Automating React Native Deployments](https://www.youtube.com/watch?v=Auto_Deploy)
+
+### 💻 Repositorios de Ejemplo
+- [React Native CI/CD Examples](https://github.com/react-native-community/react-native-cicd)
+- [Fastlane React Native](https://github.com/fastlane/fastlane-react-native)
+
+---
+
+## 🚀 Próximos Pasos
+
+Una vez completado este módulo, estarás listo para:
+
+1. **Módulo 13: Monitoreo y Analytics** - Implementar crash reporting y métricas
+2. **Módulo 14: Seguridad** - Implementar autenticación y encriptación
+3. **Módulo 15: Testing Avanzado** - Testing unitario, integración y E2E
+4. **Módulo 16: Arquitecturas Empresariales** - Patrones avanzados y escalabilidad
+
+---
+
+## 🎯 Evaluación del Módulo
+
+### ✅ Criterios de Completado
+- [x] Completar todas las 5 clases del módulo
+- [x] Configurar un pipeline de CI/CD funcional
+- [x] Generar APK/AAB firmado para producción
+- [x] Automatizar el proceso de despliegue
+- [x] Implementar monitoreo de builds y despliegues
+
+### 🏆 Nivel de Dominio
+- **Principiante**: Entender conceptos básicos de CI/CD
+- **Intermedio**: Configurar pipelines simples de CI/CD
+- **Avanzado**: Implementar pipelines complejos con automatización
+- **Experto**: Optimizar y escalar pipelines para equipos grandes
+
+---
+
+## 💡 Consejos para el Éxito
+
+1. **Empieza con pipelines simples** antes de crear configuraciones complejas
+2. **Prueba en entornos de staging** antes de desplegar a producción
+3. **Documenta bien tu configuración** de CI/CD para el equipo
+4. **Implementa rollbacks automáticos** para casos de emergencia
+5. **Monitorea métricas** de builds y despliegues continuamente
+
+---
+
+## 🎉 ¡Módulo Completado!
+
+Has completado exitosamente el **Módulo 12: CI/CD y Deployment** del curso de React Native. 
+
+**¡Felicidades!** Ahora tienes las habilidades para configurar pipelines de CI/CD completos y desplegar aplicaciones React Native de manera profesional y automatizada.
+
+**Continúa tu aprendizaje** con el siguiente módulo para convertirte en un desarrollador React Native completo. 🚀

@@ -1,15 +1,15 @@
-# 📚 Módulo 3: Navegación y Routing
+# 📚 Módulo 4: Navegación y Routing
 
 ## 🧭 Navegación del Módulo
-- **⬅️ Anterior**: [Módulo 2: Componentes Básicos](../junior_2/README.md)
-- **➡️ Siguiente**: [Módulo 4: Estado y Gestión de Datos](../midLevel_2/README.md)
+- **⬅️ Anterior**: [Módulo 3: Estado y Props](../junior_3/README.md)
+- **➡️ Siguiente**: [Módulo 5: Gestión de Estado](../midLevel_2/README.md)
 - **🏠 [Volver al Inicio](../../README.md)**
 
 ---
 
 ## 🎯 Descripción del Módulo
 
-El **Módulo 3: Navegación y Routing** es fundamental para crear aplicaciones React Native con múltiples pantallas y navegación fluida entre ellas. Aprenderás a implementar diferentes tipos de navegación, desde la básica hasta sistemas completamente personalizados.
+El **Módulo 4: Navegación y Routing** es fundamental para crear aplicaciones React Native con múltiples pantallas y navegación fluida entre ellas. Aprenderás a implementar diferentes tipos de navegación, desde la básica hasta sistemas completamente personalizados.
 
 ### **¿Qué aprenderás?**
 

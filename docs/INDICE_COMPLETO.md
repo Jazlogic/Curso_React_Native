@@ -77,9 +77,37 @@
 - **Clase 5: Sincronización** - Offline/online, conflictos, cola de cambios, tiempo real
 - **Clase 6: Backup y Restauración** - Backups automáticos, cifrado, restauración, testing
 
+#### **[Módulo 8: Expo y Desarrollo Rápido](midLevel_5/README.md)**
+- **Descripción**: Expo SDK, herramientas de desarrollo, servicios en la nube, publicación
+- **Contenido**: Expo CLI, Expo SDK, servicios de Expo, desarrollo rápido, publicación
+- **Duración**: 8-10 horas
+- **Prerrequisitos**: Módulos 1, 2, 3, 4, 5, 6 y 7 completados
+- **Proyecto**: App completa desarrollada con Expo y publicada
+
+##### **Clases del Módulo 8:**
+- **[Clase 1: Fundamentos de Expo](midLevel_5/clase_1_fundamentos_expo.md)** - ¿Qué es Expo?, ventajas y limitaciones, configuración inicial
+- **[Clase 2: Expo SDK y APIs](midLevel_5/clase_2_expo_sdk_apis.md)** - Camera, Location, Notifications, FileSystem, MediaLibrary
+- **[Clase 3: Herramientas de Desarrollo](midLevel_5/clase_3_herramientas_desarrollo.md)** - Expo CLI, Expo DevTools, debugging, hot reloading
+- **[Clase 4: Servicios de Expo](midLevel_5/clase_4_servicios_expo.md)** - Expo Updates, Expo Notifications, Expo AuthSession, Expo SecureStore
+- **[Clase 5: Publicación y Distribución](midLevel_5/clase_5_publicacion_distribucion.md)** - Expo Application Services, builds nativos, publicación en stores
+
+#### **[Módulo 9: UI-UX y Diseño de Interfaces](midLevel_6/README.md)**
+- **Descripción**: Principios de diseño de interfaz de usuario, experiencia de usuario, accesibilidad, y mejores prácticas de diseño para aplicaciones móviles
+- **Contenido**: Principios de diseño, psicología del color, tipografía, iconografía, accesibilidad, testing de usabilidad, prototipado
+- **Duración**: 10-12 horas
+- **Prerrequisitos**: Módulos 1, 2, 3, 4, 5, 6, 7 y 8 completados
+- **Proyecto**: App con diseño profesional, accesible y centrada en la experiencia del usuario
+
+##### **Clases del Módulo 9:**
+- **[Clase 1: Fundamentos de UI-UX](midLevel_6/clase_1_fundamentos_ui_ux.md)** - Principios de diseño, psicología del usuario, heurísticas de Nielsen
+- **[Clase 2: Diseño Visual y Branding](midLevel_6/clase_2_diseno_visual_branding.md)** - Psicología del color, tipografía, iconografía, sistemas de diseño
+- **[Clase 3: Layout y Composición](midLevel_6/clase_3_layout_composicion.md)** - Grid systems, espaciado, jerarquía visual, responsive design
+- **[Clase 4: Accesibilidad e Inclusión](midLevel_6/clase_4_accesibilidad_inclusion.md)** - WCAG guidelines, VoiceOver, TalkBack, testing de accesibilidad
+- **[Clase 5: Prototipado y Testing de Usabilidad](midLevel_6/clase_5_prototipado_testing_usabilidad.md)** - Figma, prototipos interactivos, testing con usuarios, iteración de diseño
+
 ### 🔴 **NIVEL SENIOR** - Arquitectura y Optimización
 
-#### **Módulo 8: Patrones de Diseño** ✅
+#### **[Módulo 10: Patrones de Diseño](senior_1/README.md)** ✅
 - **Descripción**: Patrones de diseño creacionales, estructurales y de comportamiento
 - **Contenido**: Principios SOLID, patrones de diseño, Clean Architecture, patrones compuestos
 - **Duración**: 8-10 horas
@@ -87,7 +115,14 @@
 - **Proyecto**: App empresarial con arquitectura limpia y patrones de diseño
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 9: Testing** ✅
+##### **Clases del Módulo 10:**
+- **[Clase 1: Principios SOLID](senior_1/clase_1_principios_solid.md)** - Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
+- **[Clase 2: Patrones Creacionales](senior_1/clase_2_patrones_creacionales.md)** - Singleton, Factory, Builder, Prototype, Abstract Factory
+- **[Clase 3: Patrones Estructurales](senior_1/clase_3_patrones_estructurales.md)** - Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy
+- **[Clase 4: Patrones de Comportamiento](senior_1/clase_4_patrones_comportamiento.md)** - Chain of Responsibility, Command, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor
+- **[Clase 5: Clean Architecture](senior_1/clase_5_clean_architecture.md)** - Capas, dependencias, inversión de control, testing
+
+#### **[Módulo 11: Testing](senior_2/README.md)** ✅
 - **Descripción**: Jest, Testing Library, Detox, TDD, cobertura de código
 - **Contenido**: Testing unitario, de integración, E2E, TDD, cobertura de código
 - **Duración**: 10-12 horas
@@ -95,7 +130,7 @@
 - **Proyecto**: App con suite completa de testing y alta cobertura de código
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 10: Performance** ✅
+#### **Módulo 12: Performance** ✅
 - **Descripción**: Profiling, optimización, memoización, lazy loading
 - **Contenido**: Optimización de rendimiento, profiling, memoización, lazy loading
 - **Duración**: 8-10 horas
@@ -103,7 +138,7 @@
 - **Proyecto**: App optimizada para máximo rendimiento
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 11: APIs Nativas** ✅
+#### **Módulo 13: APIs Nativas** ✅
 - **Descripción**: Integración con APIs nativas del dispositivo: cámara, geolocalización, notificaciones push, sensores, y acceso a hardware del dispositivo.
 - **Contenido**: Cámara y galería, geolocalización y mapas, notificaciones push y locales, sensores y hardware avanzado
 - **Duración**: 8-10 horas
@@ -111,7 +146,7 @@
 - **Proyecto**: App con integración completa de APIs nativas
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 12: CI/CD** ✅
+#### **Módulo 14: CI/CD** ✅
 - **Descripción**: Implementación de integración continua y despliegue continuo para aplicaciones React Native, incluyendo automatización de builds, testing y despliegue.
 - **Contenido**: GitHub Actions, Fastlane, testing automatizado, despliegue y monitoreo
 - **Duración**: 9-10 horas
@@ -119,7 +154,7 @@
 - **Proyecto**: Pipeline completo de CI/CD con monitoreo
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 13: Monitoreo** ✅
+#### **Módulo 15: Monitoreo** ✅
 - **Descripción**: Crashlytics, Analytics, performance monitoring, A/B testing
 - **Contenido**: Monitoreo de crashes, analytics, performance, A/B testing
 - **Duración**: 6-8 horas
@@ -127,7 +162,7 @@
 - **Proyecto**: App con sistema completo de monitoreo y analytics
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 14: Seguridad** ✅
+#### **Módulo 16: Seguridad** ✅
 - **Descripción**: Implementación de sistemas completos de seguridad para aplicaciones React Native, incluyendo autenticación, autorización, encriptación, protección de datos y mejores prácticas de seguridad.
 - **Contenido**: Fundamentos de seguridad, autenticación y autorización, encriptación y protección de datos, seguridad de red y API, auditoría y cumplimiento
 - **Duración**: 8-10 horas
@@ -135,7 +170,7 @@
 - **Proyecto**: App segura con múltiples capas de protección
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 15: Testing Avanzado** ✅
+#### **Módulo 17: Testing Avanzado** ✅
 - **Descripción**: Testing unitario avanzado, testing de integración, testing E2E, testing de rendimiento
 - **Contenido**: Jest avanzado, mocks complejos, testing de hooks, testing de componentes, testing de APIs, testing de navegación, testing de estado global, Detox, testing de flujos, métricas de rendimiento, testing de memoria, testing de velocidad, pipelines de testing, testing automatizado, reporting y métricas
 - **Duración**: 9-10 horas
@@ -143,7 +178,7 @@
 - **Proyecto**: Sistema completo de testing para aplicación React Native
 - **Estado**: ✅ Completado (5 clases)
 
-#### **Módulo 16: Arquitecturas Empresariales** ✅
+#### **Módulo 18: Arquitecturas Empresariales** ✅
 - **Descripción**: Micro-frontends, feature flags, multi-tenant, event-driven
 - **Contenido**: Arquitecturas empresariales, micro-frontends, feature flags, multi-tenancy, sistemas event-driven, CQRS, Event Sourcing
 - **Duración**: 11 horas
@@ -153,13 +188,13 @@
 
 ## 📊 Resumen de Contenido
 
-### **📚 Total de Módulos**: 16
-### **✅ Módulos Completados**: 16 de 16
+### **📚 Total de Módulos**: 18
+### **✅ Módulos Completados**: 18 de 18
 ### **⏱️ Duración Total Estimada**: 140-180 horas
 ### **🎯 Niveles de Dificultad**:
 - **🟢 Junior**: 3 módulos (18-24 horas) ✅
 - **🟡 Mid-Level**: 4 módulos (38-47 horas) ✅
-- **🔴 Senior**: 9 módulos (84-109 horas) - 9 completados ✅
+- **🔴 Senior**: 11 módulos (95-120 horas) - 11 completados ✅
 
 ### **💻 Tecnologías Cubiertas**:
 - **React Native**: Framework principal

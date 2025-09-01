@@ -1,5 +1,12 @@
 # 📚 Módulo 3: Estado, Props y Ciclo de Vida
 
+## 🧭 Navegación del Módulo
+- **⬅️ Anterior**: [Módulo 2: Componentes Básicos](../junior_2/README.md)
+- **➡️ Siguiente**: [Módulo 4: Navegación](../midLevel_1/README.md)
+- **🏠 [Volver al Inicio](../../README.md)**
+
+---
+
 ## 🎯 Descripción del Módulo
 
 Este módulo te enseñará los fundamentos del estado y el ciclo de vida en React Native. Aprenderás a gestionar el estado local, implementar efectos secundarios, manejar referencias a elementos y crear formularios interactivos con validación avanzada.

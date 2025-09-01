@@ -2,7 +2,7 @@
 
 ## 🧭 Navegación del Módulo
 - **⬅️ Anterior**: [Módulo 1: Introducción y Configuración](../junior_1/README.md)
-- **➡️ Siguiente**: [Módulo 3: Navegación y Routing](../midLevel_1/README.md)
+- **➡️ Siguiente**: [Módulo 3: Estado y Props](../junior_3/README.md)
 - **🏠 [Volver al Inicio](../../README.md)**
 
 ---

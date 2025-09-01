@@ -1,4 +1,11 @@
-# 📚 Módulo 4: Estado y Gestión de Datos
+# 📚 Módulo 5: Estado y Gestión de Datos
+
+## 🧭 Navegación del Módulo
+- **⬅️ Anterior**: [Módulo 4: Navegación](../midLevel_1/README.md)
+- **➡️ Siguiente**: [Módulo 6: APIs y Networking](../midLevel_3/README.md)
+- **🏠 [Volver al Inicio](../../README.md)**
+
+---
 
 ## 🎯 Descripción del Módulo
 
