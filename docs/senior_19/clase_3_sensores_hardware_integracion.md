@@ -1,857 +1,635 @@
 # Clase 3: Integración de Sensores y Hardware
 
-## Objetivos de la Clase
-- Comprender la integración de sensores en aplicaciones React Native
-- Aprender sobre el acceso a hardware del dispositivo
-- Implementar funcionalidades que utilicen sensores
-- Optimizar el uso de recursos del dispositivo
+## 🎯 Objetivos de la Clase
 
-## Contenido de la Clase
+- Comprender los sensores disponibles en dispositivos móviles
+- Integrar acelerómetro, giroscopio y magnetómetro
+- Implementar controles basados en sensores
+- Utilizar cámara y micrófono para interacciones
+- Crear experiencias inmersivas con hardware
 
-### 1. Introducción a los Sensores en React Native
+## 📋 Contenido
+
+### 1. Introducción a los Sensores Móviles
 
 #### Tipos de Sensores Disponibles
-- **Acelerómetro:** Detección de movimiento y orientación
-- **Giroscopio:** Rotación y orientación espacial
-- **Magnetómetro:** Campo magnético y brújula
-- **Proximidad:** Detección de objetos cercanos
-- **Luz:** Nivel de iluminación ambiental
-- **Presión:** Altitud y presión atmosférica
-- **Humedad:** Nivel de humedad ambiental
-- **Temperatura:** Temperatura del dispositivo
+- **Acelerómetro**: Detecta aceleración y orientación
+- **Giroscopio**: Mide rotación angular
+- **Magnetómetro**: Detecta campos magnéticos (brújula)
+- **Sensor de Proximidad**: Detecta objetos cercanos
+- **Sensor de Luz**: Mide iluminación ambiental
+- **Barómetro**: Mide presión atmosférica
+- **Humedad**: Detecta humedad ambiental
 
-#### Librerías para Sensores
-```bash
-npm install react-native-sensors
-npm install @react-native-community/geolocation
-npm install react-native-device-info
-npm install react-native-orientation-locker
+#### Permisos y Configuración
+```javascript
+import { PermissionsAndroid, Platform } from 'react-native';
+
+const requestSensorPermissions = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      ]);
+      
+      return Object.values(granted).every(
+        permission => permission === PermissionsAndroid.RESULTS.GRANTED
+      );
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  }
+  return true;
+};
 ```
 
-### 2. Configuración de Sensores
+### 2. Acelerómetro y Giroscopio
 
-#### Permisos Necesarios
-```xml
-<!-- android/app/src/main/AndroidManifest.xml -->
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.VIBRATE" />
-```
+#### Configuración del Acelerómetro
+```javascript
+import { Accelerometer } from 'react-native-sensors';
 
-```xml
-<!-- ios/Info.plist -->
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Esta app necesita acceso a la ubicación para funcionalidades de sensores</string>
-<key>NSCameraUsageDescription</key>
-<string>Esta app necesita acceso a la cámara para funcionalidades de sensores</string>
-```
-
-### 3. Implementación de Sensores
-
-#### Acelerómetro y Giroscopio
-```jsx
-// SensorManager.js
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { accelerometer, gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
-
-const SensorManager = () => {
-  const [accelerometerData, setAccelerometerData] = useState({ x: 0, y: 0, z: 0 });
-  const [gyroscopeData, setGyroscopeData] = useState({ x: 0, y: 0, z: 0 });
-  const [isListening, setIsListening] = useState(false);
-
+const AccelerometerComponent = () => {
+  const [acceleration, setAcceleration] = useState({ x: 0, y: 0, z: 0 });
+  
   useEffect(() => {
-    setUpdateIntervalForType(SensorTypes.accelerometer, 100);
-    setUpdateIntervalForType(SensorTypes.gyroscope, 100);
-  }, []);
-
-  const startListening = () => {
-    setIsListening(true);
+    const subscription = Accelerometer.subscribe(({ x, y, z }) => {
+      setAcceleration({ x, y, z });
+    });
     
-    const accelerometerSubscription = accelerometer.subscribe(({ x, y, z }) => {
-      setAccelerometerData({ x, y, z });
+    return () => subscription.unsubscribe();
+  }, []);
+  
+  return (
+    <View>
+      <Text>X: {acceleration.x.toFixed(2)}</Text>
+      <Text>Y: {acceleration.y.toFixed(2)}</Text>
+      <Text>Z: {acceleration.z.toFixed(2)}</Text>
+    </View>
+  );
+};
+```
+
+#### Configuración del Giroscopio
+```javascript
+import { Gyroscope } from 'react-native-sensors';
+
+const GyroscopeComponent = () => {
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  
+  useEffect(() => {
+    const subscription = Gyroscope.subscribe(({ x, y, z }) => {
+      setRotation({ x, y, z });
     });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+  
+  return (
+    <View>
+      <Text>Rotación X: {rotation.x.toFixed(2)}</Text>
+      <Text>Rotación Y: {rotation.y.toFixed(2)}</Text>
+      <Text>Rotación Z: {rotation.z.toFixed(2)}</Text>
+    </View>
+  );
+};
+```
 
-    const gyroscopeSubscription = gyroscope.subscribe(({ x, y, z }) => {
-      setGyroscopeData({ x, y, z });
+#### Controles de Movimiento
+```javascript
+const MotionControls = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const subscription = Accelerometer.subscribe(({ x, y }) => {
+      // Convertir aceleración a movimiento
+      const deltaX = x * 0.1;
+      const deltaY = y * 0.1;
+      
+      setPosition(prev => ({
+        x: Math.max(0, Math.min(300, prev.x + deltaX)),
+        y: Math.max(0, Math.min(500, prev.y + deltaY))
+      }));
     });
-
-    return () => {
-      accelerometerSubscription.unsubscribe();
-      gyroscopeSubscription.unsubscribe();
-    };
-  };
-
-  const stopListening = () => {
-    setIsListening(false);
-  };
-
+    
+    return () => subscription.unsubscribe();
+  }, []);
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Datos de Sensores</Text>
+      <View
+        style={[
+          styles.ball,
+          {
+            left: position.x,
+            top: position.y
+          }
+        ]}
+      />
+    </View>
+  );
+};
+```
+
+### 3. Magnetómetro y Brújula
+
+#### Implementación de Brújula
+```javascript
+import { Magnetometer } from 'react-native-sensors';
+
+const CompassComponent = () => {
+  const [heading, setHeading] = useState(0);
+  
+  useEffect(() => {
+    const subscription = Magnetometer.subscribe(({ x, y }) => {
+      // Calcular dirección magnética
+      const angle = Math.atan2(y, x) * (180 / Math.PI);
+      const normalizedAngle = (angle + 360) % 360;
+      setHeading(normalizedAngle);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+  
+  return (
+    <View style={styles.compass}>
+      <View
+        style={[
+          styles.needle,
+          {
+            transform: [{ rotate: `${heading}deg` }]
+          }
+        ]}
+      />
+      <Text style={styles.headingText}>
+        {heading.toFixed(0)}°
+      </Text>
+    </View>
+  );
+};
+```
+
+#### Navegación con Brújula
+```javascript
+const NavigationCompass = ({ targetHeading }) => {
+  const [currentHeading, setCurrentHeading] = useState(0);
+  
+  useEffect(() => {
+    const subscription = Magnetometer.subscribe(({ x, y }) => {
+      const angle = Math.atan2(y, x) * (180 / Math.PI);
+      setCurrentHeading((angle + 360) % 360);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+  
+  const getDirectionToTarget = () => {
+    const diff = targetHeading - currentHeading;
+    return (diff + 360) % 360;
+  };
+  
+  const direction = getDirectionToTarget();
+  
+  return (
+    <View style={styles.navigation}>
+      <View
+        style={[
+          styles.arrow,
+          {
+            transform: [{ rotate: `${direction}deg` }]
+          }
+        ]}
+      />
+      <Text>Dirección al objetivo: {direction.toFixed(0)}°</Text>
+    </View>
+  );
+};
+```
+
+### 4. Sensor de Proximidad
+
+#### Detección de Proximidad
+```javascript
+import { DeviceEventEmitter } from 'react-native';
+
+const ProximitySensor = () => {
+  const [isNear, setIsNear] = useState(false);
+  
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      'proximitySensorDidChange',
+      (data) => {
+        setIsNear(data.proximity);
+      }
+    );
+    
+    return () => subscription.remove();
+  }, []);
+  
+  return (
+    <View style={styles.proximityContainer}>
+      <Text style={[
+        styles.proximityText,
+        { color: isNear ? 'red' : 'green' }
+      ]}>
+        {isNear ? 'Objeto cerca' : 'Objeto lejos'}
+      </Text>
+    </View>
+  );
+};
+```
+
+#### Control de Pantalla con Proximidad
+```javascript
+const ProximityScreenControl = () => {
+  const [screenOn, setScreenOn] = useState(true);
+  
+  useEffect(() => {
+    const subscription = DeviceEventEmitter.addListener(
+      'proximitySensorDidChange',
+      (data) => {
+        if (data.proximity) {
+          // Apagar pantalla cuando hay proximidad
+          setScreenOn(false);
+        } else {
+          // Encender pantalla cuando no hay proximidad
+          setScreenOn(true);
+        }
+      }
+    );
+    
+    return () => subscription.remove();
+  }, []);
+  
+  return (
+    <View style={[
+      styles.screen,
+      { opacity: screenOn ? 1 : 0.3 }
+    ]}>
+      <Text>Contenido de la pantalla</Text>
+    </View>
+  );
+};
+```
+
+### 5. Integración de Cámara
+
+#### Configuración de Cámara
+```javascript
+import { RNCamera } from 'react-native-camera';
+
+const CameraComponent = () => {
+  const [cameraRef, setCameraRef] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  
+  const takePicture = async () => {
+    if (cameraRef) {
+      const options = {
+        quality: 0.8,
+        base64: true,
+        skipProcessing: true
+      };
       
-      <View style={styles.sensorContainer}>
-        <Text style={styles.sensorTitle}>Acelerómetro</Text>
-        <Text style={styles.sensorData}>X: {accelerometerData.x.toFixed(2)}</Text>
-        <Text style={styles.sensorData}>Y: {accelerometerData.y.toFixed(2)}</Text>
-        <Text style={styles.sensorData}>Z: {accelerometerData.z.toFixed(2)}</Text>
+      try {
+        const data = await cameraRef.takePictureAsync(options);
+        console.log('Foto tomada:', data.uri);
+      } catch (error) {
+        console.error('Error al tomar foto:', error);
+      }
+    }
+  };
+  
+  const startRecording = async () => {
+    if (cameraRef) {
+      try {
+        const video = await cameraRef.recordAsync({
+          quality: RNCamera.Constants.VideoQuality['720p'],
+          maxDuration: 30
+        });
+        console.log('Video grabado:', video.uri);
+        setIsRecording(false);
+      } catch (error) {
+        console.error('Error al grabar video:', error);
+      }
+    }
+  };
+  
+  return (
+    <RNCamera
+      ref={setCameraRef}
+      style={styles.camera}
+      type={RNCamera.Constants.Type.back}
+      flashMode={RNCamera.Constants.FlashMode.auto}
+    >
+      <View style={styles.cameraControls}>
+        <TouchableOpacity onPress={takePicture}>
+          <Text>Tomar Foto</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity onPress={startRecording}>
+          <Text>{isRecording ? 'Grabando...' : 'Grabar Video'}</Text>
+        </TouchableOpacity>
       </View>
+    </RNCamera>
+  );
+};
+```
 
-      <View style={styles.sensorContainer}>
-        <Text style={styles.sensorTitle}>Giroscopio</Text>
-        <Text style={styles.sensorData}>X: {gyroscopeData.x.toFixed(2)}</Text>
-        <Text style={styles.sensorData}>Y: {gyroscopeData.y.toFixed(2)}</Text>
-        <Text style={styles.sensorData}>Z: {gyroscopeData.z.toFixed(2)}</Text>
-      </View>
+#### Detección de Objetos con Cámara
+```javascript
+import { Camera } from 'react-native-vision-camera';
 
+const ObjectDetection = () => {
+  const [detectedObjects, setDetectedObjects] = useState([]);
+  
+  const onFrameProcessed = (frame) => {
+    // Procesar frame para detección de objetos
+    // Aquí integrarías con TensorFlow Lite o ML Kit
+    const objects = processFrameForObjects(frame);
+    setDetectedObjects(objects);
+  };
+  
+  return (
+    <View style={styles.container}>
+      <Camera
+        style={styles.camera}
+        onFrameProcessed={onFrameProcessed}
+      />
+      
+      {detectedObjects.map((obj, index) => (
+        <View
+          key={index}
+          style={[
+            styles.objectBox,
+            {
+              left: obj.x,
+              top: obj.y,
+              width: obj.width,
+              height: obj.height
+            }
+          ]}
+        >
+          <Text style={styles.objectLabel}>{obj.label}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
+```
+
+### 6. Integración de Audio
+
+#### Grabación de Audio
+```javascript
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+
+const AudioRecorder = () => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioPath, setAudioPath] = useState('');
+  const audioRecorderPlayer = new AudioRecorderPlayer();
+  
+  const startRecording = async () => {
+    try {
+      const result = await audioRecorderPlayer.startRecorder();
+      setAudioPath(result);
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error al iniciar grabación:', error);
+    }
+  };
+  
+  const stopRecording = async () => {
+    try {
+      const result = await audioRecorderPlayer.stopRecorder();
+      setIsRecording(false);
+      console.log('Audio guardado en:', result);
+    } catch (error) {
+      console.error('Error al detener grabación:', error);
+    }
+  };
+  
+  return (
+    <View style={styles.audioContainer}>
       <TouchableOpacity
-        style={[styles.button, isListening ? styles.stopButton : styles.startButton]}
-        onPress={isListening ? stopListening : startListening}
+        onPress={isRecording ? stopRecording : startRecording}
+        style={[
+          styles.recordButton,
+          { backgroundColor: isRecording ? 'red' : 'green' }
+        ]}
       >
         <Text style={styles.buttonText}>
-          {isListening ? 'Detener' : 'Iniciar'}
+          {isRecording ? 'Detener' : 'Grabar'}
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  sensorContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
-  },
-  sensorTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333'
-  },
-  sensorData: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#666'
-  },
-  button: {
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20
-  },
-  startButton: {
-    backgroundColor: '#4CAF50'
-  },
-  stopButton: {
-    backgroundColor: '#f44336'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
-});
-
-export default SensorManager;
 ```
 
-#### Geolocalización
-```jsx
-// LocationManager.js
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
+#### Reconocimiento de Voz
+```javascript
+import Voice from '@react-native-voice/voice';
 
-const LocationManager = () => {
-  const [location, setLocation] = useState(null);
-  const [isTracking, setIsTracking] = useState(false);
-  const [watchId, setWatchId] = useState(null);
-
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-          timestamp: position.timestamp
-        });
-      },
-      (error) => {
-        Alert.alert('Error', 'No se pudo obtener la ubicación');
-        console.log(error);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
-
-  const startTracking = () => {
-    const id = Geolocation.watchPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-          timestamp: position.timestamp
-        });
-      },
-      (error) => {
-        Alert.alert('Error', 'Error en el seguimiento de ubicación');
-        console.log(error);
-      },
-      { enableHighAccuracy: true, distanceFilter: 10 }
-    );
-    setWatchId(id);
-    setIsTracking(true);
-  };
-
-  const stopTracking = () => {
-    if (watchId) {
-      Geolocation.clearWatch(watchId);
-      setWatchId(null);
-      setIsTracking(false);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Geolocalización</Text>
-      
-      {location && (
-        <View style={styles.locationContainer}>
-          <Text style={styles.locationTitle}>Ubicación Actual</Text>
-          <Text style={styles.locationData}>
-            Latitud: {location.latitude.toFixed(6)}
-          </Text>
-          <Text style={styles.locationData}>
-            Longitud: {location.longitude.toFixed(6)}
-          </Text>
-          <Text style={styles.locationData}>
-            Precisión: {location.accuracy.toFixed(2)}m
-          </Text>
-          <Text style={styles.locationData}>
-            Timestamp: {new Date(location.timestamp).toLocaleString()}
-          </Text>
-        </View>
-      )}
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={getCurrentLocation}>
-          <Text style={styles.buttonText}>Obtener Ubicación</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[styles.button, isTracking ? styles.stopButton : styles.startButton]}
-          onPress={isTracking ? stopTracking : startTracking}
-        >
-          <Text style={styles.buttonText}>
-            {isTracking ? 'Detener Seguimiento' : 'Iniciar Seguimiento'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  locationContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
-  },
-  locationTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333'
-  },
-  locationData: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#666'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  button: {
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    flex: 0.45
-  },
-  startButton: {
-    backgroundColor: '#4CAF50'
-  },
-  stopButton: {
-    backgroundColor: '#f44336'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold'
-  }
-});
-
-export default LocationManager;
-```
-
-### 4. Integración con Hardware
-
-#### Cámara y Flash
-```jsx
-// CameraManager.js
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
-import { RNCamera } from 'react-native-camera';
-import { Vibration } from 'react-native';
-
-const CameraManager = () => {
-  const [flashMode, setFlashMode] = useState(RNCamera.Constants.FlashMode.off);
-  const [cameraType, setCameraType] = useState(RNCamera.Constants.Type.back);
-  const cameraRef = useRef(null);
-
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      try {
-        const options = { quality: 0.5, base64: true };
-        const data = await cameraRef.current.takePictureAsync(options);
-        Alert.alert('Foto tomada', 'La foto se ha guardado correctamente');
-        Vibration.vibrate(100);
-      } catch (error) {
-        Alert.alert('Error', 'No se pudo tomar la foto');
-        console.log(error);
-      }
-    }
-  };
-
-  const toggleFlash = () => {
-    setFlashMode(
-      flashMode === RNCamera.Constants.FlashMode.off
-        ? RNCamera.Constants.FlashMode.on
-        : RNCamera.Constants.FlashMode.off
-    );
-  };
-
-  const toggleCamera = () => {
-    setCameraType(
-      cameraType === RNCamera.Constants.Type.back
-        ? RNCamera.Constants.Type.front
-        : RNCamera.Constants.Type.back
-    );
-  };
-
-  return (
-    <View style={styles.container}>
-      <RNCamera
-        ref={cameraRef}
-        style={styles.camera}
-        type={cameraType}
-        flashMode={flashMode}
-        androidCameraPermissionOptions={{
-          title: 'Permiso para usar la cámara',
-          message: 'Necesitamos tu permiso para usar la cámara',
-          buttonPositive: 'Ok',
-          buttonNegative: 'Cancelar'
-        }}
-      >
-        <View style={styles.controls}>
-          <TouchableOpacity style={styles.controlButton} onPress={toggleFlash}>
-            <Text style={styles.controlButtonText}>
-              Flash: {flashMode === RNCamera.Constants.FlashMode.off ? 'Off' : 'On'}
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
-            <Text style={styles.captureButtonText}>Capturar</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.controlButton} onPress={toggleCamera}>
-            <Text style={styles.controlButtonText}>Cambiar</Text>
-          </TouchableOpacity>
-        </View>
-      </RNCamera>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  camera: {
-    flex: 1
-  },
-  controls: {
-    position: 'absolute',
-    bottom: 50,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
-  },
-  controlButton: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 15,
-    borderRadius: 10
-  },
-  controlButtonText: {
-    color: 'white',
-    fontWeight: 'bold'
-  },
-  captureButton: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: '#333'
-  },
-  captureButtonText: {
-    color: '#333',
-    fontWeight: 'bold',
-    fontSize: 16
-  }
-});
-
-export default CameraManager;
-```
-
-#### Vibración y Sonido
-```jsx
-// HapticFeedback.js
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
-import { Vibration } from 'react-native';
-import Sound from 'react-native-sound';
-
-const HapticFeedback = () => {
-  const [sound, setSound] = useState(null);
-
-  const playSound = () => {
-    const newSound = new Sound('notification.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (error) {
-        Alert.alert('Error', 'No se pudo cargar el sonido');
-        console.log(error);
-      } else {
-        newSound.play((success) => {
-          if (success) {
-            console.log('Sonido reproducido correctamente');
-          } else {
-            console.log('Error al reproducir el sonido');
-          }
-        });
-      }
-    });
-    setSound(newSound);
-  };
-
-  const vibrate = (pattern) => {
-    Vibration.vibrate(pattern);
-  };
-
-  const stopSound = () => {
-    if (sound) {
-      sound.stop();
-      sound.release();
-      setSound(null);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Feedback Háptico y Sonido</Text>
-      
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => vibrate(100)}
-        >
-          <Text style={styles.buttonText}>Vibración Corta</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => vibrate([0, 100, 100, 100])}
-        >
-          <Text style={styles.buttonText}>Vibración Patrón</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={styles.button}
-          onPress={playSound}
-        >
-          <Text style={styles.buttonText}>Reproducir Sonido</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={styles.button}
-          onPress={stopSound}
-        >
-          <Text style={styles.buttonText}>Detener Sonido</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'center'
-  },
-  button: {
-    backgroundColor: '#2196F3',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
-});
-
-export default HapticFeedback;
-```
-
-### 5. Optimización de Recursos
-
-#### Gestión de Memoria
-```jsx
-// ResourceManager.js
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-
-const ResourceManager = () => {
-  const [deviceInfo, setDeviceInfo] = useState({});
-  const [memoryUsage, setMemoryUsage] = useState(0);
-
+const VoiceRecognition = () => {
+  const [isListening, setIsListening] = useState(false);
+  const [recognizedText, setRecognizedText] = useState('');
+  
   useEffect(() => {
-    getDeviceInfo();
-    startMemoryMonitoring();
+    Voice.onSpeechStart = () => setIsListening(true);
+    Voice.onSpeechEnd = () => setIsListening(false);
+    Voice.onSpeechResults = (e) => {
+      setRecognizedText(e.value[0]);
+    };
+    
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
   }, []);
-
-  const getDeviceInfo = async () => {
+  
+  const startListening = async () => {
     try {
-      const info = {
-        brand: await DeviceInfo.getBrand(),
-        model: await DeviceInfo.getModel(),
-        systemVersion: await DeviceInfo.getSystemVersion(),
-        totalMemory: await DeviceInfo.getTotalMemory(),
-        usedMemory: await DeviceInfo.getUsedMemory()
-      };
-      setDeviceInfo(info);
+      await Voice.start('es-ES');
     } catch (error) {
-      console.log('Error getting device info:', error);
+      console.error('Error al iniciar reconocimiento:', error);
     }
   };
-
-  const startMemoryMonitoring = () => {
-    const interval = setInterval(async () => {
-      try {
-        const used = await DeviceInfo.getUsedMemory();
-        setMemoryUsage(used);
-      } catch (error) {
-        console.log('Error monitoring memory:', error);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  };
-
-  const optimizeMemory = useCallback(() => {
-    // Limpiar caché y liberar memoria
-    if (global.gc) {
-      global.gc();
+  
+  const stopListening = async () => {
+    try {
+      await Voice.stop();
+    } catch (error) {
+      console.error('Error al detener reconocimiento:', error);
     }
-    Alert.alert('Optimización', 'Memoria optimizada');
-  }, []);
-
+  };
+  
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Información del Dispositivo</Text>
+    <View style={styles.voiceContainer}>
+      <TouchableOpacity
+        onPress={isListening ? stopListening : startListening}
+        style={styles.voiceButton}
+      >
+        <Text>{isListening ? 'Detener' : 'Escuchar'}</Text>
+      </TouchableOpacity>
       
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoTitle}>Información del Dispositivo</Text>
-        <Text style={styles.infoText}>Marca: {deviceInfo.brand}</Text>
-        <Text style={styles.infoText}>Modelo: {deviceInfo.model}</Text>
-        <Text style={styles.infoText}>Versión del Sistema: {deviceInfo.systemVersion}</Text>
-        <Text style={styles.infoText}>Memoria Total: {deviceInfo.totalMemory} MB</Text>
-        <Text style={styles.infoText}>Memoria Usada: {memoryUsage} MB</Text>
-      </View>
+      <Text style={styles.recognizedText}>
+        {recognizedText}
+      </Text>
+    </View>
+  );
+};
+```
 
-      <TouchableOpacity style={styles.button} onPress={optimizeMemory}>
-        <Text style={styles.buttonText}>Optimizar Memoria</Text>
+### 7. Vibración y Feedback Háptico
+
+#### Configuración de Vibración
+```javascript
+import { Vibration } from 'react-native';
+
+const VibrationComponent = () => {
+  const vibrate = () => {
+    Vibration.vibrate(1000); // Vibrar por 1 segundo
+  };
+  
+  const vibratePattern = () => {
+    Vibration.vibrate([0, 500, 200, 500]); // Patrón de vibración
+  };
+  
+  return (
+    <View style={styles.vibrationContainer}>
+      <TouchableOpacity onPress={vibrate}>
+        <Text>Vibración Simple</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={vibratePattern}>
+        <Text>Patrón de Vibración</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  infoContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
-  },
-  infoTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333'
-  },
-  infoText: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#666'
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
-});
-
-export default ResourceManager;
 ```
 
-### 6. Casos de Uso Avanzados
+#### Feedback Háptico Avanzado
+```javascript
+import { HapticFeedback } from 'react-native-haptic-feedback';
 
-#### Aplicación de Fitness con Sensores
-```jsx
-// FitnessTracker.js
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { accelerometer, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
-
-const FitnessTracker = () => {
-  const [steps, setSteps] = useState(0);
-  const [isTracking, setIsTracking] = useState(false);
-  const [lastAcceleration, setLastAcceleration] = useState({ x: 0, y: 0, z: 0 });
-
-  useEffect(() => {
-    setUpdateIntervalForType(SensorTypes.accelerometer, 100);
-  }, []);
-
-  const startTracking = () => {
-    setIsTracking(true);
-    
-    const subscription = accelerometer.subscribe(({ x, y, z }) => {
-      const acceleration = { x, y, z };
-      const magnitude = Math.sqrt(x * x + y * y + z * z);
+const HapticFeedbackComponent = () => {
+  const triggerHaptic = (type) => {
+    HapticFeedback.trigger(type);
+  };
+  
+  return (
+    <View style={styles.hapticContainer}>
+      <TouchableOpacity onPress={() => triggerHaptic('impactLight')}>
+        <Text>Impacto Ligero</Text>
+      </TouchableOpacity>
       
-      // Detectar pasos basado en cambios de aceleración
-      if (magnitude > 10 && Math.abs(acceleration.y - lastAcceleration.y) > 2) {
-        setSteps(prev => prev + 1);
-      }
+      <TouchableOpacity onPress={() => triggerHaptic('impactMedium')}>
+        <Text>Impacto Medio</Text>
+      </TouchableOpacity>
       
-      setLastAcceleration(acceleration);
-    });
+      <TouchableOpacity onPress={() => triggerHaptic('impactHeavy')}>
+        <Text>Impacto Fuerte</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => triggerHaptic('notificationSuccess')}>
+        <Text>Notificación de Éxito</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+```
 
-    return () => subscription.unsubscribe();
+### 8. Proyecto Práctico: App de Sensores
+
+#### Estructura del Proyecto
+```
+src/
+├── components/
+│   ├── SensorDisplay.js
+│   ├── MotionController.js
+│   ├── CompassView.js
+│   └── CameraView.js
+├── hooks/
+│   ├── useAccelerometer.js
+│   ├── useGyroscope.js
+│   └── useMagnetometer.js
+├── screens/
+│   ├── SensorDashboard.js
+│   └── MotionGame.js
+└── utils/
+    ├── sensorUtils.js
+    └── calibration.js
+```
+
+#### Implementación de la App
+```javascript
+const SensorApp = () => {
+  const [activeSensor, setActiveSensor] = useState('accelerometer');
+  
+  const sensorComponents = {
+    accelerometer: <AccelerometerDisplay />,
+    gyroscope: <GyroscopeDisplay />,
+    magnetometer: <CompassView />,
+    camera: <CameraView />
   };
-
-  const stopTracking = () => {
-    setIsTracking(false);
-  };
-
-  const resetSteps = () => {
-    setSteps(0);
-  };
-
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Contador de Pasos</Text>
-      
-      <View style={styles.stepsContainer}>
-        <Text style={styles.stepsText}>{steps}</Text>
-        <Text style={styles.stepsLabel}>Pasos</Text>
+      <View style={styles.sensorTabs}>
+        {Object.keys(sensorComponents).map(sensor => (
+          <TouchableOpacity
+            key={sensor}
+            onPress={() => setActiveSensor(sensor)}
+            style={[
+              styles.tab,
+              activeSensor === sensor && styles.activeTab
+            ]}
+          >
+            <Text style={styles.tabText}>
+              {sensor.charAt(0).toUpperCase() + sensor.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, isTracking ? styles.stopButton : styles.startButton]}
-          onPress={isTracking ? stopTracking : startTracking}
-        >
-          <Text style={styles.buttonText}>
-            {isTracking ? 'Detener' : 'Iniciar'}
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={resetSteps}>
-          <Text style={styles.buttonText}>Reset</Text>
-        </TouchableOpacity>
+      
+      <View style={styles.sensorContent}>
+        {sensorComponents[activeSensor]}
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  stepsContainer: {
-    alignItems: 'center',
-    marginBottom: 50
-  },
-  stepsText: {
-    fontSize: 72,
-    fontWeight: 'bold',
-    color: '#4CAF50'
-  },
-  stepsLabel: {
-    fontSize: 18,
-    color: '#666'
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-  button: {
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    flex: 0.45
-  },
-  startButton: {
-    backgroundColor: '#4CAF50'
-  },
-  stopButton: {
-    backgroundColor: '#f44336'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
-});
-
-export default FitnessTracker;
 ```
 
-## Recursos Adicionales
+## 🎮 Ejercicios Prácticos
 
-### Documentación
-- [React Native Sensors](https://github.com/react-native-sensors/react-native-sensors)
-- [React Native Device Info](https://github.com/react-native-device-info/react-native-device-info)
-- [React Native Camera](https://github.com/react-native-camera/react-native-camera)
-
-### Herramientas
-- [Flipper](https://fbflipper.com/) - Para debugging de sensores
-- [React Native Debugger](https://github.com/jhen0409/react-native-debugger)
-
-### Tutoriales
-- [Working with Sensors in React Native](https://blog.logrocket.com/working-sensors-react-native/)
-- [React Native Camera Tutorial](https://reactnative.dev/docs/camera)
-
-## Ejercicios Prácticos
-
-### Ejercicio 1: Contador de Pasos
-Crear una aplicación que cuente pasos usando el acelerómetro.
+### Ejercicio 1: Control de Movimiento
+Crea un juego que use el acelerómetro para controlar un personaje.
 
 ### Ejercicio 2: Brújula Digital
-Implementar una brújula usando el magnetómetro.
+Implementa una brújula que muestre la dirección actual.
 
-### Ejercicio 3: Aplicación de Fitness
-Crear una aplicación completa de fitness con múltiples sensores.
+### Ejercicio 3: App de Sensores
+Desarrolla una aplicación que muestre datos de todos los sensores.
 
-## Evaluación
+## 📚 Recursos Adicionales
 
-### Criterios de Evaluación
-- **Funcionalidad (40%):** Los sensores funcionan correctamente
-- **Rendimiento (30%):** Optimización del uso de recursos
-- **Código (20%):** Estructura y calidad del código
-- **Innovación (10%):** Uso creativo de los sensores
+- [React Native Sensors](https://github.com/react-native-sensors/react-native-sensors)
+- [React Native Camera](https://github.com/react-native-camera/react-native-camera)
+- [React Native Voice](https://github.com/react-native-voice/voice)
+- [Haptic Feedback](https://github.com/mkuczera/react-native-haptic-feedback)
 
-### Entregables
-- Código fuente de la aplicación
-- Demo de la aplicación funcionando
-- Documentación de optimizaciones
-- Reflexión sobre el proceso de desarrollo
+## ✅ Checklist de la Clase
+
+- [ ] Configurar sensores básicos
+- [ ] Implementar controles de movimiento
+- [ ] Crear brújula digital
+- [ ] Integrar cámara y audio
+- [ ] Implementar feedback háptico
+- [ ] Completar la app de sensores
 
 ---
 
-**Duración estimada:** 2.5 horas  
-**Dificultad:** Intermedia  
-**Prerrequisitos:** Conocimientos sólidos de React Native, experiencia con APIs nativas
+**Siguiente Clase**: Optimización de Rendimiento para Juegos y AR

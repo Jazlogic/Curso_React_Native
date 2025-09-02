@@ -1,342 +1,168 @@
 # Clase 4: Optimización de Rendimiento para Juegos y AR
 
-## Objetivos de la Clase
-- Comprender las técnicas de optimización específicas para juegos y AR
-- Aprender sobre profiling y debugging de rendimiento
-- Implementar estrategias de optimización avanzadas
-- Optimizar el uso de memoria y CPU en aplicaciones intensivas
+## 🎯 Objetivos de la Clase
 
-## Contenido de la Clase
+- Comprender los desafíos de rendimiento en juegos y AR
+- Implementar técnicas de optimización de frame rate
+- Gestionar memoria eficientemente
+- Optimizar el uso de batería
+- Aplicar técnicas de optimización nativa
 
-### 1. Fundamentos de Optimización de Rendimiento
+## 📋 Contenido
+
+### 1. Fundamentos de Rendimiento
 
 #### Métricas de Rendimiento
-- **Frame Rate:** 60 FPS para experiencia fluida
-- **Memory Usage:** Gestión eficiente de memoria
-- **CPU Usage:** Optimización de cálculos
-- **Battery Life:** Eficiencia energética
-- **Startup Time:** Tiempo de carga inicial
+- **Frame Rate (FPS)**: Frames por segundo
+- **Frame Time**: Tiempo entre frames
+- **Memory Usage**: Uso de memoria RAM
+- **CPU Usage**: Uso del procesador
+- **GPU Usage**: Uso de la tarjeta gráfica
+- **Battery Drain**: Consumo de batería
 
 #### Herramientas de Profiling
-```bash
-# React Native Performance
-npm install --save-dev react-native-performance
+```javascript
+import { Performance } from 'react-native-performance';
 
-# Flipper para debugging
-npm install --save-dev react-native-flipper
-```
-
-### 2. Optimización de Renderizado
-
-#### React Native Reanimated
-```jsx
-// OptimizedAnimation.js
-import React, { useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  runOnJS
-} from 'react-native-reanimated';
-
-const OptimizedAnimation = () => {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
-  const rotation = useSharedValue(0);
-
-  const animateScale = () => {
-    scale.value = withSpring(scale.value === 1 ? 1.2 : 1, {
-      damping: 15,
-      stiffness: 150
-    });
-  };
-
-  const animateOpacity = () => {
-    opacity.value = withTiming(opacity.value === 1 ? 0.5 : 1, {
-      duration: 300
-    });
-  };
-
-  const animateRotation = () => {
-    rotation.value = withTiming(rotation.value + 360, {
-      duration: 1000
-    });
-  };
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { rotate: `${rotation.value}deg` }
-    ],
-    opacity: opacity.value
-  }));
-
-  return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.box, animatedStyle]} />
-      
-      <View style={styles.controls}>
-        <TouchableOpacity style={styles.button} onPress={animateScale}>
-          <Text style={styles.buttonText}>Escala</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={animateOpacity}>
-          <Text style={styles.buttonText}>Opacidad</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={animateRotation}>
-          <Text style={styles.buttonText}>Rotación</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5'
-  },
-  box: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#4CAF50',
-    borderRadius: 10,
-    marginBottom: 50
-  },
-  controls: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    paddingHorizontal: 20
-  },
-  button: {
-    backgroundColor: '#2196F3',
-    padding: 15,
-    borderRadius: 10,
-    minWidth: 80,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold'
-  }
-});
-
-export default OptimizedAnimation;
-```
-
-#### Memoización y Optimización de Componentes
-```jsx
-// OptimizedGameComponent.js
-import React, { memo, useCallback, useMemo } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-
-const GameEntity = memo(({ position, size, color, onPress }) => {
-  const style = useMemo(() => ({
-    position: 'absolute',
-    left: position.x,
-    top: position.y,
-    width: size.width,
-    height: size.height,
-    backgroundColor: color
-  }), [position.x, position.y, size.width, size.height, color]);
-
-  const handlePress = useCallback(() => {
-    onPress?.(position);
-  }, [onPress, position]);
-
-  return (
-    <View style={style} onTouchEnd={handlePress} />
-  );
-});
-
-const GameWorld = memo(({ entities, onEntityPress }) => {
-  const entityComponents = useMemo(() => {
-    return entities.map((entity, index) => (
-      <GameEntity
-        key={entity.id || index}
-        position={entity.position}
-        size={entity.size}
-        color={entity.color}
-        onPress={onEntityPress}
-      />
-    ));
-  }, [entities, onEntityPress]);
-
-  return (
-    <View style={styles.gameWorld}>
-      {entityComponents}
-    </View>
-  );
-});
-
-const styles = StyleSheet.create({
-  gameWorld: {
-    flex: 1,
-    position: 'relative'
-  }
-});
-
-export default GameWorld;
-```
-
-### 3. Optimización de Memoria
-
-#### Gestión de Memoria para Juegos
-```jsx
-// MemoryManager.js
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-
-const MemoryManager = () => {
-  const [memoryUsage, setMemoryUsage] = useState(0);
-  const [totalMemory, setTotalMemory] = useState(0);
-  const [entities, setEntities] = useState([]);
-  const memoryInterval = useRef(null);
-
+const PerformanceMonitor = () => {
+  const [metrics, setMetrics] = useState({});
+  
   useEffect(() => {
-    initializeMemoryMonitoring();
-    return () => {
-      if (memoryInterval.current) {
-        clearInterval(memoryInterval.current);
-      }
-    };
-  }, []);
-
-  const initializeMemoryMonitoring = async () => {
-    try {
-      const total = await DeviceInfo.getTotalMemory();
-      setTotalMemory(total);
-      
-      memoryInterval.current = setInterval(async () => {
-        const used = await DeviceInfo.getUsedMemory();
-        setMemoryUsage(used);
-      }, 1000);
-    } catch (error) {
-      console.log('Error initializing memory monitoring:', error);
-    }
-  };
-
-  const createEntities = () => {
-    const newEntities = Array.from({ length: 1000 }, (_, index) => ({
-      id: index,
-      position: { x: Math.random() * 300, y: Math.random() * 500 },
-      size: { width: 20, height: 20 },
-      color: `#${Math.floor(Math.random() * 16777215).toString(16)}`
+    const startTime = Performance.now();
+    
+    // Tu código aquí
+    
+    const endTime = Performance.now();
+    const duration = endTime - startTime;
+    
+    setMetrics(prev => ({
+      ...prev,
+      lastOperation: duration
     }));
-    setEntities(newEntities);
-  };
-
-  const clearEntities = () => {
-    setEntities([]);
-    // Forzar garbage collection si está disponible
-    if (global.gc) {
-      global.gc();
-    }
-  };
-
-  const optimizeMemory = () => {
-    // Limpiar caché y liberar memoria
-    clearEntities();
-    Alert.alert('Optimización', 'Memoria optimizada');
-  };
-
-  const memoryPercentage = totalMemory > 0 ? (memoryUsage / totalMemory) * 100 : 0;
-
+  }, []);
+  
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Gestión de Memoria</Text>
-      
-      <View style={styles.memoryInfo}>
-        <Text style={styles.memoryText}>
-          Memoria Usada: {memoryUsage} MB
-        </Text>
-        <Text style={styles.memoryText}>
-          Memoria Total: {totalMemory} MB
-        </Text>
-        <Text style={styles.memoryText}>
-          Porcentaje: {memoryPercentage.toFixed(1)}%
-        </Text>
-        <Text style={styles.memoryText}>
-          Entidades: {entities.length}
-        </Text>
-      </View>
-
-      <View style={styles.controls}>
-        <TouchableOpacity style={styles.button} onPress={createEntities}>
-          <Text style={styles.buttonText}>Crear Entidades</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={clearEntities}>
-          <Text style={styles.buttonText}>Limpiar Entidades</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={optimizeMemory}>
-          <Text style={styles.buttonText}>Optimizar Memoria</Text>
-        </TouchableOpacity>
-      </View>
+    <View>
+      <Text>Tiempo de operación: {metrics.lastOperation}ms</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  memoryInfo: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
-  },
-  memoryText: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#333'
-  },
-  controls: {
-    flex: 1,
-    justifyContent: 'center'
-  },
-  button: {
-    backgroundColor: '#2196F3',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 15,
-    alignItems: 'center'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
-});
-
-export default MemoryManager;
 ```
 
-#### Object Pooling
-```jsx
-// ObjectPool.js
+### 2. Optimización de Frame Rate
+
+#### Target de 60 FPS
+```javascript
+import { useFrameCallback } from 'react-native-reanimated';
+
+const GameLoop = () => {
+  const [frameCount, setFrameCount] = useState(0);
+  const [fps, setFps] = useState(0);
+  const lastTime = useRef(0);
+  
+  useFrameCallback((frameInfo) => {
+    const { timestamp } = frameInfo;
+    const deltaTime = timestamp - lastTime.current;
+    
+    if (deltaTime >= 16.67) { // 60 FPS = 16.67ms por frame
+      setFrameCount(prev => prev + 1);
+      setFps(1000 / deltaTime);
+      lastTime.current = timestamp;
+      
+      // Lógica del juego aquí
+      updateGame(deltaTime);
+    }
+  });
+  
+  return (
+    <View>
+      <Text>FPS: {fps.toFixed(1)}</Text>
+      <Text>Frames: {frameCount}</Text>
+    </View>
+  );
+};
+```
+
+#### Optimización de Renderizado
+```javascript
+import { memo, useMemo } from 'react';
+
+const OptimizedGameObject = memo(({ position, rotation, scale }) => {
+  const transform = useMemo(() => ({
+    transform: [
+      { translateX: position.x },
+      { translateY: position.y },
+      { rotate: `${rotation}deg` },
+      { scale: scale }
+    ]
+  }), [position.x, position.y, rotation, scale]);
+  
+  return (
+    <View style={[styles.gameObject, transform]}>
+      {/* Contenido del objeto */}
+    </View>
+  );
+});
+
+// Uso en el juego
+const GameScene = ({ objects }) => {
+  const visibleObjects = useMemo(() => {
+    return objects.filter(obj => isObjectVisible(obj));
+  }, [objects]);
+  
+  return (
+    <View>
+      {visibleObjects.map(obj => (
+        <OptimizedGameObject
+          key={obj.id}
+          position={obj.position}
+          rotation={obj.rotation}
+          scale={obj.scale}
+        />
+      ))}
+    </View>
+  );
+};
+```
+
+#### Culling y LOD (Level of Detail)
+```javascript
+const LODSystem = () => {
+  const [cameraPosition, setCameraPosition] = useState({ x: 0, y: 0, z: 0 });
+  
+  const getLODLevel = (objectPosition) => {
+    const distance = calculateDistance(cameraPosition, objectPosition);
+    
+    if (distance < 10) return 'high';
+    if (distance < 50) return 'medium';
+    return 'low';
+  };
+  
+  const renderObject = (object) => {
+    const lodLevel = getLODLevel(object.position);
+    
+    switch (lodLevel) {
+      case 'high':
+        return <HighDetailObject {...object} />;
+      case 'medium':
+        return <MediumDetailObject {...object} />;
+      case 'low':
+        return <LowDetailObject {...object} />;
+    }
+  };
+  
+  return (
+    <View>
+      {gameObjects.map(obj => renderObject(obj))}
+    </View>
+  );
+};
+```
+
+### 3. Gestión de Memoria
+
+#### Memory Pooling
+```javascript
 class ObjectPool {
   constructor(createFn, resetFn, initialSize = 10) {
     this.createFn = createFn;
@@ -344,14 +170,15 @@ class ObjectPool {
     this.pool = [];
     this.active = new Set();
     
-    // Crear objetos iniciales
+    // Pre-crear objetos
     for (let i = 0; i < initialSize; i++) {
       this.pool.push(this.createFn());
     }
   }
-
+  
   get() {
     let obj;
+    
     if (this.pool.length > 0) {
       obj = this.pool.pop();
     } else {
@@ -361,7 +188,7 @@ class ObjectPool {
     this.active.add(obj);
     return obj;
   }
-
+  
   release(obj) {
     if (this.active.has(obj)) {
       this.active.delete(obj);
@@ -369,7 +196,7 @@ class ObjectPool {
       this.pool.push(obj);
     }
   }
-
+  
   releaseAll() {
     this.active.forEach(obj => {
       this.resetFn(obj);
@@ -377,478 +204,418 @@ class ObjectPool {
     });
     this.active.clear();
   }
-
-  getActiveCount() {
-    return this.active.size;
-  }
-
-  getPoolSize() {
-    return this.pool.length;
-  }
 }
 
-// Uso del Object Pool
+// Uso del pool
 const bulletPool = new ObjectPool(
-  () => ({ x: 0, y: 0, velocity: 0, active: false }),
-  (bullet) => {
-    bullet.x = 0;
-    bullet.y = 0;
-    bullet.velocity = 0;
-    bullet.active = false;
-  },
-  50
+  () => ({ x: 0, y: 0, active: false }),
+  (bullet) => { bullet.active = false; }
 );
 
-export default ObjectPool;
+const createBullet = (x, y) => {
+  const bullet = bulletPool.get();
+  bullet.x = x;
+  bullet.y = y;
+  bullet.active = true;
+  return bullet;
+};
 ```
 
-### 4. Optimización de AR
-
-#### Optimización de Renderizado AR
-```jsx
-// OptimizedARView.js
-import React, { useState, useRef, useCallback } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { ARView, ARPlane, ARBox } from 'react-native-ar';
-
-const OptimizedARView = () => {
-  const [planes, setPlanes] = useState([]);
-  const [objects, setObjects] = useState([]);
-  const [isTracking, setIsTracking] = useState(false);
-  const arRef = useRef(null);
-  const frameCount = useRef(0);
-  const lastFrameTime = useRef(Date.now());
-
-  const onPlaneDetected = useCallback((plane) => {
-    setPlanes(prev => {
-      // Limitar el número de planos para optimizar rendimiento
-      if (prev.length >= 10) {
-        return [...prev.slice(1), plane];
-      }
-      return [...prev, plane];
-    });
-  }, []);
-
-  const addObject = useCallback((plane) => {
-    setObjects(prev => {
-      // Limitar el número de objetos
-      if (prev.length >= 20) {
-        return [...prev.slice(1), {
-          id: Date.now(),
-          position: plane.position,
-          rotation: [0, 0, 0],
-          scale: [0.1, 0.1, 0.1]
-        }];
-      }
-      return [...prev, {
-        id: Date.now(),
-        position: plane.position,
-        rotation: [0, 0, 0],
-        scale: [0.1, 0.1, 0.1]
-      }];
-    });
-  }, []);
-
-  const onFrameUpdate = useCallback(() => {
-    frameCount.current++;
-    const now = Date.now();
+#### Garbage Collection Optimization
+```javascript
+const OptimizedGameLoop = () => {
+  const gameState = useRef({
+    objects: [],
+    particles: [],
+    lastGC: 0
+  });
+  
+  const updateGame = useCallback((deltaTime) => {
+    const state = gameState.current;
     
-    // Calcular FPS cada segundo
-    if (now - lastFrameTime.current >= 1000) {
-      const fps = frameCount.current;
-      frameCount.current = 0;
-      lastFrameTime.current = now;
+    // Actualizar objetos
+    state.objects.forEach(obj => {
+      if (obj.active) {
+        obj.update(deltaTime);
+      }
+    });
+    
+    // Limpiar objetos inactivos
+    state.objects = state.objects.filter(obj => obj.active);
+    
+    // Garbage collection cada 5 segundos
+    if (Date.now() - state.lastGC > 5000) {
+      state.lastGC = Date.now();
       
-      // Log FPS para debugging
-      console.log(`FPS: ${fps}`);
+      // Forzar garbage collection si está disponible
+      if (global.gc) {
+        global.gc();
+      }
     }
   }, []);
+  
+  return <GameView onUpdate={updateGame} />;
+};
+```
 
-  const resetScene = useCallback(() => {
-    setObjects([]);
-    setPlanes([]);
+### 4. Optimización de Batería
+
+#### Battery-Aware Rendering
+```javascript
+import { Battery } from 'react-native-battery';
+
+const BatteryOptimizedGame = () => {
+  const [batteryLevel, setBatteryLevel] = useState(100);
+  const [isCharging, setIsCharging] = useState(false);
+  
+  useEffect(() => {
+    const subscription = Battery.addListener((battery) => {
+      setBatteryLevel(battery.level);
+      setIsCharging(battery.isCharging);
+    });
+    
+    return () => subscription.remove();
   }, []);
-
-  const toggleTracking = useCallback(() => {
-    setIsTracking(prev => !prev);
-  }, []);
-
+  
+  const getOptimalSettings = () => {
+    if (batteryLevel < 20 && !isCharging) {
+      return {
+        targetFPS: 30,
+        quality: 'low',
+        effects: false
+      };
+    } else if (batteryLevel < 50) {
+      return {
+        targetFPS: 45,
+        quality: 'medium',
+        effects: true
+      };
+    } else {
+      return {
+        targetFPS: 60,
+        quality: 'high',
+        effects: true
+      };
+    }
+  };
+  
+  const settings = getOptimalSettings();
+  
   return (
-    <View style={styles.container}>
-      <ARView
-        ref={arRef}
-        style={styles.arView}
-        onPlaneDetected={onPlaneDetected}
-        onFrameUpdate={onFrameUpdate}
-        enablePlaneDetection={isTracking}
-      >
-        {planes.map((plane) => (
-          <ARPlane
-            key={plane.id}
-            position={plane.position}
-            rotation={plane.rotation}
-            scale={plane.scale}
-            onPress={() => addObject(plane)}
-            opacity={0.3}
-          />
-        ))}
-        
-        {objects.map((obj) => (
-          <ARBox
-            key={obj.id}
-            position={obj.position}
-            rotation={obj.rotation}
-            scale={obj.scale}
-            color="blue"
-          />
-        ))}
-      </ARView>
-      
-      <View style={styles.controls}>
-        <TouchableOpacity
-          style={[styles.button, isTracking ? styles.activeButton : styles.inactiveButton]}
-          onPress={toggleTracking}
-        >
-          <Text style={styles.buttonText}>
-            {isTracking ? 'Detener Tracking' : 'Iniciar Tracking'}
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.button} onPress={resetScene}>
-          <Text style={styles.buttonText}>Reset</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <GameView
+      targetFPS={settings.targetFPS}
+      quality={settings.quality}
+      effects={settings.effects}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  arView: {
-    flex: 1
-  },
-  controls: {
-    position: 'absolute',
-    bottom: 50,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20
-  },
-  button: {
-    padding: 15,
-    borderRadius: 10,
-    minWidth: 120,
-    alignItems: 'center'
-  },
-  activeButton: {
-    backgroundColor: '#f44336'
-  },
-  inactiveButton: {
-    backgroundColor: '#4CAF50'
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14
-  }
-});
-
-export default OptimizedARView;
 ```
 
-### 5. Optimización de Red y Datos
-
-#### Caching y Lazy Loading
-```jsx
-// DataManager.js
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-class DataManager {
-  constructor() {
-    this.cache = new Map();
-    this.cacheExpiry = new Map();
-    this.maxCacheSize = 100;
-    this.cacheTimeout = 5 * 60 * 1000; // 5 minutos
-  }
-
-  async get(key) {
-    // Verificar si está en caché y no ha expirado
-    if (this.cache.has(key)) {
-      const expiry = this.cacheExpiry.get(key);
-      if (Date.now() < expiry) {
-        return this.cache.get(key);
-      } else {
-        // Limpiar entrada expirada
-        this.cache.delete(key);
-        this.cacheExpiry.delete(key);
-      }
-    }
-
-    // Intentar cargar desde AsyncStorage
-    try {
-      const stored = await AsyncStorage.getItem(key);
-      if (stored) {
-        const data = JSON.parse(stored);
-        this.set(key, data);
-        return data;
-      }
-    } catch (error) {
-      console.log('Error loading from AsyncStorage:', error);
-    }
-
-    return null;
-  }
-
-  set(key, value) {
-    // Limpiar caché si está lleno
-    if (this.cache.size >= this.maxCacheSize) {
-      const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
-      this.cacheExpiry.delete(firstKey);
-    }
-
-    this.cache.set(key, value);
-    this.cacheExpiry.set(key, Date.now() + this.cacheTimeout);
-
-    // Guardar en AsyncStorage
-    AsyncStorage.setItem(key, JSON.stringify(value)).catch(error => {
-      console.log('Error saving to AsyncStorage:', error);
-    });
-  }
-
-  clear() {
-    this.cache.clear();
-    this.cacheExpiry.clear();
-    AsyncStorage.clear().catch(error => {
-      console.log('Error clearing AsyncStorage:', error);
-    });
-  }
-
-  getCacheStats() {
-    return {
-      size: this.cache.size,
-      maxSize: this.maxCacheSize,
-      keys: Array.from(this.cache.keys())
-    };
-  }
-}
-
-export default DataManager;
-```
-
-### 6. Profiling y Debugging
-
-#### Performance Monitor
-```jsx
-// PerformanceMonitor.js
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-
-const PerformanceMonitor = () => {
-  const [metrics, setMetrics] = useState({
-    fps: 0,
-    memory: 0,
-    cpu: 0,
-    battery: 0
-  });
-  const [isMonitoring, setIsMonitoring] = useState(false);
-  const frameCount = useRef(0);
-  const lastTime = useRef(Date.now());
-  const monitoringInterval = useRef(null);
-
+#### Adaptive Quality
+```javascript
+const AdaptiveQuality = () => {
+  const [quality, setQuality] = useState('high');
+  const [performance, setPerformance] = useState({ fps: 60, frameTime: 16.67 });
+  
   useEffect(() => {
-    if (isMonitoring) {
-      startMonitoring();
-    } else {
-      stopMonitoring();
-    }
-
-    return () => stopMonitoring();
-  }, [isMonitoring]);
-
-  const startMonitoring = () => {
-    monitoringInterval.current = setInterval(async () => {
-      try {
-        const memory = await DeviceInfo.getUsedMemory();
-        const battery = await DeviceInfo.getBatteryLevel();
-        
-        setMetrics(prev => ({
-          ...prev,
-          memory,
-          battery: battery * 100
-        }));
-      } catch (error) {
-        console.log('Error monitoring performance:', error);
+    const interval = setInterval(() => {
+      // Monitorear rendimiento
+      const currentFPS = getCurrentFPS();
+      const currentFrameTime = getCurrentFrameTime();
+      
+      setPerformance({ fps: currentFPS, frameTime: currentFrameTime });
+      
+      // Ajustar calidad basado en rendimiento
+      if (currentFPS < 45) {
+        setQuality('low');
+      } else if (currentFPS < 55) {
+        setQuality('medium');
+      } else {
+        setQuality('high');
       }
     }, 1000);
-  };
-
-  const stopMonitoring = () => {
-    if (monitoringInterval.current) {
-      clearInterval(monitoringInterval.current);
-      monitoringInterval.current = null;
-    }
-  };
-
-  const onFrameUpdate = () => {
-    frameCount.current++;
-    const now = Date.now();
     
-    if (now - lastTime.current >= 1000) {
-      const fps = frameCount.current;
-      frameCount.current = 0;
-      lastTime.current = now;
-      
-      setMetrics(prev => ({
-        ...prev,
-        fps
-      }));
+    return () => clearInterval(interval);
+  }, []);
+  
+  const getQualitySettings = () => {
+    switch (quality) {
+      case 'low':
+        return {
+          shadowQuality: 0,
+          textureQuality: 0.5,
+          particleCount: 10,
+          drawDistance: 50
+        };
+      case 'medium':
+        return {
+          shadowQuality: 1,
+          textureQuality: 0.75,
+          particleCount: 25,
+          drawDistance: 100
+        };
+      case 'high':
+        return {
+          shadowQuality: 2,
+          textureQuality: 1.0,
+          particleCount: 50,
+          drawDistance: 200
+        };
     }
   };
-
-  const toggleMonitoring = () => {
-    setIsMonitoring(prev => !prev);
-  };
-
+  
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Monitor de Rendimiento</Text>
-      
-      <View style={styles.metricsContainer}>
-        <View style={styles.metric}>
-          <Text style={styles.metricLabel}>FPS</Text>
-          <Text style={styles.metricValue}>{metrics.fps}</Text>
-        </View>
-        
-        <View style={styles.metric}>
-          <Text style={styles.metricLabel}>Memoria (MB)</Text>
-          <Text style={styles.metricValue}>{metrics.memory.toFixed(0)}</Text>
-        </View>
-        
-        <View style={styles.metric}>
-          <Text style={styles.metricLabel}>Batería (%)</Text>
-          <Text style={styles.metricValue}>{metrics.battery.toFixed(0)}</Text>
-        </View>
-      </View>
+    <GameView qualitySettings={getQualitySettings()} />
+  );
+};
+```
 
-      <TouchableOpacity
-        style={[styles.button, isMonitoring ? styles.stopButton : styles.startButton]}
-        onPress={toggleMonitoring}
-      >
-        <Text style={styles.buttonText}>
-          {isMonitoring ? 'Detener Monitoreo' : 'Iniciar Monitoreo'}
-        </Text>
+### 5. Optimización de GPU
+
+#### Texture Optimization
+```javascript
+const TextureManager = () => {
+  const [textures, setTextures] = useState(new Map());
+  
+  const loadTexture = useCallback(async (texturePath) => {
+    if (textures.has(texturePath)) {
+      return textures.get(texturePath);
+    }
+    
+    try {
+      const texture = await loadTextureFromPath(texturePath);
+      setTextures(prev => new Map(prev).set(texturePath, texture));
+      return texture;
+    } catch (error) {
+      console.error('Error loading texture:', error);
+      return null;
+    }
+  }, [textures]);
+  
+  const preloadTextures = useCallback(async (texturePaths) => {
+    const promises = texturePaths.map(path => loadTexture(path));
+    await Promise.all(promises);
+  }, [loadTexture]);
+  
+  return { loadTexture, preloadTextures };
+};
+```
+
+#### Shader Optimization
+```javascript
+const OptimizedShader = () => {
+  const vertexShader = `
+    attribute vec4 position;
+    attribute vec2 texCoord;
+    uniform mat4 mvpMatrix;
+    varying vec2 vTexCoord;
+    
+    void main() {
+      gl_Position = mvpMatrix * position;
+      vTexCoord = texCoord;
+    }
+  `;
+  
+  const fragmentShader = `
+    precision mediump float;
+    varying vec2 vTexCoord;
+    uniform sampler2D texture;
+    uniform float alpha;
+    
+    void main() {
+      vec4 color = texture2D(texture, vTexCoord);
+      gl_FragColor = vec4(color.rgb, color.a * alpha);
+    }
+  `;
+  
+  return { vertexShader, fragmentShader };
+};
+```
+
+### 6. Optimización Nativa
+
+#### Native Modules para Performance
+```javascript
+import { NativeModules } from 'react-native';
+
+const { PerformanceModule } = NativeModules;
+
+const NativeOptimization = () => {
+  const [nativeMetrics, setNativeMetrics] = useState({});
+  
+  useEffect(() => {
+    const getNativeMetrics = async () => {
+      try {
+        const metrics = await PerformanceModule.getMetrics();
+        setNativeMetrics(metrics);
+      } catch (error) {
+        console.error('Error getting native metrics:', error);
+      }
+    };
+    
+    getNativeMetrics();
+  }, []);
+  
+  const optimizeNative = async () => {
+    try {
+      await PerformanceModule.optimizeMemory();
+      await PerformanceModule.setThreadPriority('high');
+    } catch (error) {
+      console.error('Error optimizing native:', error);
+    }
+  };
+  
+  return (
+    <View>
+      <Text>CPU Usage: {nativeMetrics.cpuUsage}%</Text>
+      <Text>Memory Usage: {nativeMetrics.memoryUsage}MB</Text>
+      <TouchableOpacity onPress={optimizeNative}>
+        <Text>Optimizar Nativamente</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30
-  },
-  metricsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 30
-  },
-  metric: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
-  },
-  metricLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5
-  },
-  metricValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333'
-  },
-  button: {
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center'
-  },
-  startButton: {
-    backgroundColor: '#4CAF50'
-  },
-  stopButton: {
-    backgroundColor: '#f44336'
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
-});
-
-export default PerformanceMonitor;
 ```
 
-## Recursos Adicionales
+#### JSI (JavaScript Interface) Optimization
+```javascript
+import { TurboModuleRegistry } from 'react-native';
 
-### Documentación
+const PerformanceTurboModule = TurboModuleRegistry.get('PerformanceTurboModule');
+
+const JSIOptimization = () => {
+  const [isOptimized, setIsOptimized] = useState(false);
+  
+  const enableJSI = async () => {
+    try {
+      await PerformanceTurboModule.enableJSI();
+      setIsOptimized(true);
+    } catch (error) {
+      console.error('Error enabling JSI:', error);
+    }
+  };
+  
+  const fastCalculation = (data) => {
+    if (isOptimized) {
+      return PerformanceTurboModule.fastCalculation(data);
+    } else {
+      // Fallback a JavaScript
+      return slowCalculation(data);
+    }
+  };
+  
+  return (
+    <View>
+      <TouchableOpacity onPress={enableJSI}>
+        <Text>Habilitar JSI</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+```
+
+### 7. Proyecto Práctico: Game Performance Monitor
+
+#### Estructura del Proyecto
+```
+src/
+├── components/
+│   ├── PerformanceMonitor.js
+│   ├── FPSDisplay.js
+│   ├── MemoryGraph.js
+│   └── BatteryIndicator.js
+├── hooks/
+│   ├── usePerformance.js
+│   ├── useMemory.js
+│   └── useBattery.js
+├── utils/
+│   ├── performanceUtils.js
+│   ├── memoryUtils.js
+│   └── optimizationUtils.js
+└── screens/
+    ├── PerformanceDashboard.js
+    └── OptimizationSettings.js
+```
+
+#### Implementación del Monitor
+```javascript
+const PerformanceDashboard = () => {
+  const [metrics, setMetrics] = useState({
+    fps: 0,
+    frameTime: 0,
+    memoryUsage: 0,
+    cpuUsage: 0,
+    batteryLevel: 100
+  });
+  
+  const [optimizations, setOptimizations] = useState({
+    targetFPS: 60,
+    quality: 'high',
+    memoryLimit: 100,
+    batteryOptimization: false
+  });
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newMetrics = {
+        fps: getCurrentFPS(),
+        frameTime: getCurrentFrameTime(),
+        memoryUsage: getMemoryUsage(),
+        cpuUsage: getCPUUsage(),
+        batteryLevel: getBatteryLevel()
+      };
+      
+      setMetrics(newMetrics);
+      
+      // Aplicar optimizaciones automáticas
+      applyAutomaticOptimizations(newMetrics, optimizations);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [optimizations]);
+  
+  return (
+    <View style={styles.dashboard}>
+      <FPSDisplay fps={metrics.fps} target={optimizations.targetFPS} />
+      <MemoryGraph usage={metrics.memoryUsage} limit={optimizations.memoryLimit} />
+      <BatteryIndicator level={metrics.batteryLevel} />
+      
+      <OptimizationSettings
+        settings={optimizations}
+        onSettingsChange={setOptimizations}
+      />
+    </View>
+  );
+};
+```
+
+## 🎮 Ejercicios Prácticos
+
+### Ejercicio 1: FPS Monitor
+Implementa un monitor de FPS en tiempo real.
+
+### Ejercicio 2: Memory Pool
+Crea un sistema de pool de objetos para optimizar memoria.
+
+### Ejercicio 3: Adaptive Quality
+Desarrolla un sistema de calidad adaptativa.
+
+## 📚 Recursos Adicionales
+
 - [React Native Performance](https://reactnative.dev/docs/performance)
-- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
-- [Flipper](https://fbflipper.com/)
+- [Flipper Performance](https://fbflipper.com/)
+- [Android Profiler](https://developer.android.com/studio/profile)
+- [Xcode Instruments](https://developer.apple.com/xcode/)
 
-### Herramientas
-- [React Native Performance](https://github.com/oblador/react-native-performance)
-- [React Native Flipper](https://github.com/facebook/flipper)
+## ✅ Checklist de la Clase
 
-### Tutoriales
-- [Optimizing React Native Performance](https://blog.logrocket.com/optimizing-react-native-performance/)
-- [React Native Performance Best Practices](https://reactnative.dev/docs/performance)
-
-## Ejercicios Prácticos
-
-### Ejercicio 1: Optimización de Animaciones
-Implementar animaciones optimizadas usando React Native Reanimated.
-
-### Ejercicio 2: Gestión de Memoria
-Crear un sistema de gestión de memoria para un juego.
-
-### Ejercicio 3: Monitor de Rendimiento
-Implementar un monitor de rendimiento en tiempo real.
-
-## Evaluación
-
-### Criterios de Evaluación
-- **Rendimiento (40%):** Optimización implementada correctamente
-- **Código (30%):** Estructura y calidad del código
-- **Funcionalidad (20%):** La aplicación funciona correctamente
-- **Documentación (10%):** Documentación de optimizaciones
-
-### Entregables
-- Código fuente optimizado
-- Documentación de optimizaciones
-- Métricas de rendimiento
-- Demo de la aplicación funcionando
+- [ ] Implementar monitor de FPS
+- [ ] Optimizar gestión de memoria
+- [ ] Configurar optimización de batería
+- [ ] Aplicar técnicas de GPU
+- [ ] Implementar optimización nativa
+- [ ] Completar el monitor de rendimiento
 
 ---
 
-**Duración estimada:** 2.5 horas  
-**Dificultad:** Avanzada  
-**Prerrequisitos:** Conocimientos sólidos de React Native, experiencia con optimización
+**Siguiente Clase**: Casos de Uso Avanzados y Proyectos

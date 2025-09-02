@@ -1,384 +1,373 @@
-# Clase 1: Desarrollo de Juegos en React Native
+# Clase 1: Fundamentos de Desarrollo de Juegos
 
-## Objetivos de la Clase
+## 🎯 Objetivos de la Clase
+
 - Comprender los fundamentos del desarrollo de juegos en React Native
-- Aprender sobre las librerías y herramientas disponibles
-- Implementar un juego básico con física y animaciones
-- Entender las consideraciones de rendimiento para juegos
+- Configurar motores de juegos y herramientas necesarias
+- Implementar sistemas básicos de física y colisiones
+- Crear animaciones complejas con Reanimated
+- Desarrollar un juego simple funcional
 
-## Contenido de la Clase
+## 📋 Contenido
 
-### 1. Introducción al Desarrollo de Juegos en React Native
+### 1. Introducción al Desarrollo de Juegos
 
-#### ¿Por qué React Native para Juegos?
-- **Ventajas:**
-  - Desarrollo multiplataforma
-  - Reutilización de código
-  - Ecosistema JavaScript/TypeScript
-  - Integración con APIs nativas
+#### ¿Qué es un Motor de Juegos?
+Un motor de juegos es un framework que proporciona las herramientas necesarias para crear videojuegos, incluyendo:
 
-- **Limitaciones:**
-  - Rendimiento limitado para juegos complejos
-  - Dependencia del JavaScript Bridge
-  - Memoria limitada en dispositivos móviles
+- **Sistema de renderizado** para gráficos
+- **Motor de física** para colisiones y movimiento
+- **Sistema de audio** para efectos sonoros
+- **Gestión de entrada** para controles
+- **Sistema de animación** para movimientos
 
-#### Tipos de Juegos Apropiados para React Native
-- **Juegos 2D simples:** Puzzles, plataformas, arcade
-- **Juegos de cartas:** Solitario, poker, blackjack
-- **Juegos de estrategia:** Tower defense, city builders
-- **Juegos casuales:** Match-3, endless runners
+#### Motores de Juegos para React Native
 
-### 2. Librerías y Herramientas para Juegos
-
-#### React Native Game Engine
-```bash
-npm install react-native-game-engine
-```
-
-#### React Native Skia (Para gráficos avanzados)
-```bash
-npm install @shopify/react-native-skia
-```
-
-#### React Native Reanimated (Para animaciones)
-```bash
-npm install react-native-reanimated
-```
-
-#### React Native Gesture Handler
-```bash
-npm install react-native-gesture-handler
-```
-
-### 3. Estructura de un Juego en React Native
-
-#### Componentes Principales
-```jsx
-// GameEngine.js
-import React from 'react';
+**React Native Game Engine**
+```javascript
 import { GameEngine } from 'react-native-game-engine';
-import { Physics } from './systems/Physics';
-import { Renderer } from './systems/Renderer';
-import { Input } from './systems/Input';
 
 const Game = () => {
   const entities = {
     player: {
-      position: [100, 100],
-      size: [50, 50],
-      color: 'blue',
-      velocity: [0, 0],
-      renderer: 'player'
-    },
-    enemy: {
-      position: [200, 200],
-      size: [30, 30],
-      color: 'red',
-      velocity: [1, 0],
-      renderer: 'enemy'
+      position: [50, 50],
+      renderer: <Player />,
+      physics: {
+        velocity: [0, 0],
+        acceleration: [0, 0]
+      }
     }
   };
 
-  const systems = [Physics, Renderer, Input];
-
   return (
     <GameEngine
+      systems={[Physics, Renderer]}
       entities={entities}
-      systems={systems}
-      style={{ flex: 1 }}
     />
   );
 };
-
-export default Game;
 ```
 
-#### Sistema de Física
-```jsx
-// systems/Physics.js
+**Skia para Gráficos Avanzados**
+```javascript
+import { Canvas, Circle, Group } from '@shopify/react-native-skia';
+
+const GameCanvas = () => {
+  return (
+    <Canvas style={{ flex: 1 }}>
+      <Group>
+        <Circle cx={100} cy={100} r={50} color="red" />
+        <Circle cx={200} cy={150} r={30} color="blue" />
+      </Group>
+    </Canvas>
+  );
+};
+```
+
+### 2. Configuración del Entorno
+
+#### Instalación de Dependencias
+```bash
+# React Native Game Engine
+npm install react-native-game-engine
+
+# Skia para gráficos
+npm install @shopify/react-native-skia
+
+# Reanimated para animaciones
+npm install react-native-reanimated
+
+# Física
+npm install matter-js
+```
+
+#### Configuración de Metro
+```javascript
+// metro.config.js
+const { getDefaultConfig } = require('metro-config');
+
+module.exports = (async () => {
+  const {
+    resolver: { sourceExts, assetExts },
+  } = await getDefaultConfig();
+  
+  return {
+    transformer: {
+      babelTransformerPath: require.resolve('react-native-svg-transformer'),
+    },
+    resolver: {
+      assetExts: assetExts.filter(ext => ext !== 'svg'),
+      sourceExts: [...sourceExts, 'svg'],
+    },
+  };
+})();
+```
+
+### 3. Sistemas de Física
+
+#### Implementación Básica de Física
+```javascript
+import Matter from 'matter-js';
+
 const Physics = (entities, { time }) => {
-  Object.keys(entities).forEach(key => {
-    const entity = entities[key];
-    if (entity.velocity) {
-      entity.position[0] += entity.velocity[0] * time.delta;
-      entity.position[1] += entity.velocity[1] * time.delta;
-    }
-  });
+  let engine = entities.physics.engine;
+  
+  Matter.Engine.update(engine, time.delta);
+  
   return entities;
 };
 
-export default Physics;
-```
-
-#### Sistema de Renderizado
-```jsx
-// systems/Renderer.js
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-const Renderer = (entities, { screen }) => {
-  return Object.keys(entities).map(key => {
-    const entity = entities[key];
-    if (entity.renderer) {
-      return (
-        <View
-          key={key}
-          style={[
-            styles.entity,
-            {
-              left: entity.position[0],
-              top: entity.position[1],
-              width: entity.size[0],
-              height: entity.size[1],
-              backgroundColor: entity.color
-            }
-          ]}
-        />
-      );
-    }
-    return null;
-  });
+// Configuración del motor de física
+const setupPhysics = () => {
+  const engine = Matter.Engine.create();
+  const world = engine.world;
+  
+  // Gravedad
+  engine.world.gravity.y = 0.5;
+  
+  return { engine, world };
 };
-
-const styles = StyleSheet.create({
-  entity: {
-    position: 'absolute'
-  }
-});
-
-export default Renderer;
 ```
 
-### 4. Implementación de un Juego Básico
+#### Colisiones y Detección
+```javascript
+const CollisionSystem = (entities, { events, dispatch }) => {
+  events.forEach(event => {
+    if (event.type === 'collision') {
+      const { bodyA, bodyB } = event;
+      
+      // Lógica de colisión
+      if (bodyA.label === 'player' && bodyB.label === 'enemy') {
+        dispatch({ type: 'game-over' });
+      }
+    }
+  });
+  
+  return entities;
+};
+```
 
-#### Juego de Plataformas Simple
-```jsx
-// PlatformGame.js
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+### 4. Animaciones con Reanimated
+
+#### Animaciones de Movimiento
+```javascript
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  runOnJS
+  withTiming,
 } from 'react-native-reanimated';
 
-const { width, height } = Dimensions.get('window');
-
-const PlatformGame = () => {
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+const AnimatedPlayer = ({ position }) => {
+  const translateX = useSharedValue(position.x);
+  const translateY = useSharedValue(position.y);
   
-  const playerY = useSharedValue(height - 100);
-  const playerX = useSharedValue(width / 2);
-  const jumpHeight = 150;
-  const gravity = 5;
-
-  const jump = () => {
-    if (playerY.value === height - 100) {
-      playerY.value = withSpring(playerY.value - jumpHeight);
-      setTimeout(() => {
-        playerY.value = withSpring(height - 100);
-      }, 500);
-    }
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value }
+      ]
+    };
+  });
+  
+  const moveTo = (x, y) => {
+    translateX.value = withSpring(x);
+    translateY.value = withSpring(y);
   };
-
-  const playerStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: playerX.value },
-      { translateY: playerY.value }
-    ]
-  }));
-
+  
   return (
-    <View style={styles.container}>
-      <View style={styles.gameArea}>
-        <Animated.View style={[styles.player, playerStyle]} />
-        <View style={styles.platform} />
-      </View>
-      
-      <TouchableOpacity style={styles.jumpButton} onPress={jump}>
-        <Text style={styles.jumpText}>SALTAR</Text>
-      </TouchableOpacity>
-      
-      <Text style={styles.score}>Puntuación: {score}</Text>
-    </View>
+    <Animated.View style={[styles.player, animatedStyle]} />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#87CEEB'
-  },
-  gameArea: {
-    flex: 1,
-    position: 'relative'
-  },
-  player: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'blue',
-    borderRadius: 25,
-    position: 'absolute'
-  },
-  platform: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 50,
-    backgroundColor: 'green'
-  },
-  jumpButton: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    backgroundColor: 'orange',
-    padding: 20,
-    borderRadius: 10
-  },
-  jumpText: {
-    color: 'white',
-    fontWeight: 'bold'
-  },
-  score: {
-    position: 'absolute',
-    top: 50,
-    left: 20,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white'
-  }
-});
-
-export default PlatformGame;
 ```
 
-### 5. Optimización de Rendimiento para Juegos
-
-#### Técnicas de Optimización
-- **Use Native Driver:** Para animaciones que no afectan el layout
-- **Memoización:** Usar `React.memo` para componentes que no cambian
-- **Lazy Loading:** Cargar assets solo cuando se necesiten
-- **Object Pooling:** Reutilizar objetos para evitar garbage collection
-
-#### Ejemplo de Optimización
-```jsx
-// OptimizedGameComponent.js
-import React, { memo, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-
-const GameEntity = memo(({ position, size, color }) => {
-  const style = useCallback(() => ({
-    position: 'absolute',
-    left: position[0],
-    top: position[1],
-    width: size[0],
-    height: size[1],
-    backgroundColor: color
-  }), [position, size, color]);
-
-  return <View style={style()} />;
-});
-
-export default GameEntity;
-```
-
-### 6. Integración con APIs Nativas
-
-#### Vibración para Feedback
-```jsx
-import { Vibration } from 'react-native';
-
-const triggerVibration = () => {
-  Vibration.vibrate(100); // Vibra por 100ms
+#### Efectos Visuales
+```javascript
+const ParticleEffect = ({ position }) => {
+  const opacity = useSharedValue(1);
+  const scale = useSharedValue(1);
+  
+  useEffect(() => {
+    opacity.value = withTiming(0, { duration: 1000 });
+    scale.value = withTiming(2, { duration: 1000 });
+  }, []);
+  
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }]
+  }));
+  
+  return (
+    <Animated.View style={[styles.particle, animatedStyle]} />
+  );
 };
 ```
 
-#### Sonidos y Música
-```jsx
-import Sound from 'react-native-sound';
+### 5. Sistema de Entidades
 
-const playSound = () => {
-  const sound = new Sound('jump.mp3', Sound.MAIN_BUNDLE, (error) => {
-    if (error) {
-      console.log('Error loading sound:', error);
-    } else {
-      sound.play();
-    }
+#### Definición de Entidades
+```javascript
+const createPlayer = (x, y) => ({
+  position: [x, y],
+  size: [50, 50],
+  renderer: <Player />,
+  physics: {
+    body: Matter.Bodies.rectangle(x, y, 50, 50),
+    velocity: [0, 0]
+  },
+  health: 100,
+  score: 0
+});
+
+const createEnemy = (x, y) => ({
+  position: [x, y],
+  size: [40, 40],
+  renderer: <Enemy />,
+  physics: {
+    body: Matter.Bodies.rectangle(x, y, 40, 40),
+    velocity: [0, 1]
+  },
+  health: 50
+});
+```
+
+#### Sistema de Renderizado
+```javascript
+const Renderer = (entities, { screen, time }) => {
+  return Object.keys(entities).map(key => {
+    const entity = entities[key];
+    
+    if (!entity.renderer) return null;
+    
+    return (
+      <View
+        key={key}
+        style={{
+          position: 'absolute',
+          left: entity.position[0],
+          top: entity.position[1],
+          width: entity.size[0],
+          height: entity.size[1]
+        }}
+      >
+        {entity.renderer}
+      </View>
+    );
   });
 };
 ```
 
-### 7. Consideraciones de Diseño
+### 6. Gestión de Estado del Juego
 
-#### Responsive Design para Juegos
-- Adaptar el tamaño de elementos según la pantalla
-- Mantener proporciones consistentes
-- Considerar diferentes orientaciones
+#### Game State Management
+```javascript
+const useGameState = () => {
+  const [gameState, setGameState] = useState({
+    score: 0,
+    level: 1,
+    lives: 3,
+    isGameOver: false,
+    isPaused: false
+  });
+  
+  const updateScore = (points) => {
+    setGameState(prev => ({
+      ...prev,
+      score: prev.score + points
+    }));
+  };
+  
+  const gameOver = () => {
+    setGameState(prev => ({
+      ...prev,
+      isGameOver: true
+    }));
+  };
+  
+  return { gameState, updateScore, gameOver };
+};
+```
 
-#### Accesibilidad
-- Controles táctiles claros
-- Feedback visual y háptico
-- Opciones de configuración
+### 7. Proyecto Práctico: Juego de Plataformas
 
-### 8. Próximos Pasos
+#### Estructura del Proyecto
+```
+src/
+├── components/
+│   ├── Player.js
+│   ├── Enemy.js
+│   ├── Platform.js
+│   └── GameCanvas.js
+├── systems/
+│   ├── Physics.js
+│   ├── Renderer.js
+│   └── Collision.js
+├── entities/
+│   ├── createPlayer.js
+│   ├── createEnemy.js
+│   └── createPlatform.js
+└── Game.js
+```
 
-#### Para la Próxima Clase
-- Implementar colisiones
-- Agregar enemigos y obstáculos
-- Sistema de puntuación
-- Menús y navegación
+#### Implementación del Juego
+```javascript
+import { GameEngine } from 'react-native-game-engine';
+import { Physics, Renderer, Collision } from './systems';
+import { createPlayer, createEnemy, createPlatform } from './entities';
 
-#### Proyecto Práctico
-- Crear un juego completo
-- Implementar diferentes niveles
-- Agregar efectos de sonido
-- Optimizar el rendimiento
+const PlatformGame = () => {
+  const [entities, setEntities] = useState({
+    player: createPlayer(50, 300),
+    enemy1: createEnemy(200, 250),
+    enemy2: createEnemy(350, 200),
+    platform1: createPlatform(0, 400, 400, 20),
+    platform2: createPlatform(200, 300, 200, 20)
+  });
+  
+  const onEvent = (e) => {
+    if (e.type === 'game-over') {
+      // Lógica de game over
+    }
+  };
+  
+  return (
+    <GameEngine
+      systems={[Physics, Renderer, Collision]}
+      entities={entities}
+      onEvent={onEvent}
+    />
+  );
+};
+```
 
-## Recursos Adicionales
+## 🎮 Ejercicios Prácticos
 
-### Documentación
-- [React Native Game Engine](https://github.com/bberak/react-native-game-engine)
-- [React Native Skia](https://shopify.github.io/react-native-skia/)
-- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
+### Ejercicio 1: Juego de Pelota
+Crea un juego simple donde una pelota rebota en los bordes de la pantalla.
 
-### Tutoriales
-- [Building a Game with React Native](https://blog.logrocket.com/building-game-react-native/)
-- [React Native Game Development](https://reactnative.dev/docs/game-development)
+### Ejercicio 2: Sistema de Colisiones
+Implementa detección de colisiones entre múltiples objetos.
 
-### Herramientas
-- [Flipper](https://fbflipper.com/) - Para debugging
-- [React Native Performance](https://reactnative.dev/docs/performance)
+### Ejercicio 3: Animaciones de Partículas
+Crea efectos de partículas cuando ocurren colisiones.
 
-## Ejercicios Prácticos
+## 📚 Recursos Adicionales
 
-### Ejercicio 1: Juego Básico
-Crear un juego simple donde el jugador evite obstáculos que caen desde arriba.
+- [React Native Game Engine Documentation](https://github.com/bberak/react-native-game-engine)
+- [Skia Documentation](https://shopify.github.io/react-native-skia/)
+- [Matter.js Physics Engine](https://brm.io/matter-js/)
+- [Game Development Patterns](https://gameprogrammingpatterns.com/)
 
-### Ejercicio 2: Optimización
-Implementar técnicas de optimización en el juego creado.
+## ✅ Checklist de la Clase
 
-### Ejercicio 3: Integración
-Agregar vibración y sonidos al juego.
-
-## Evaluación
-
-### Criterios de Evaluación
-- **Funcionalidad (40%):** El juego funciona correctamente
-- **Rendimiento (30%):** Optimización implementada
-- **Código (20%):** Estructura y calidad del código
-- **Creatividad (10%):** Elementos únicos del juego
-
-### Entregables
-- Código fuente del juego
-- Documentación de optimizaciones
-- Demo del juego funcionando
-- Reflexión sobre el proceso de desarrollo
+- [ ] Configurar el entorno de desarrollo de juegos
+- [ ] Implementar sistema básico de física
+- [ ] Crear animaciones con Reanimated
+- [ ] Desarrollar sistema de colisiones
+- [ ] Completar el juego de plataformas
+- [ ] Entender los conceptos de entidades y sistemas
 
 ---
 
-**Duración estimada:** 2 horas  
-**Dificultad:** Intermedia  
-**Prerrequisitos:** Conocimientos sólidos de React Native, animaciones y hooks
+**Siguiente Clase**: Realidad Aumentada con ARKit y ARCore
