@@ -17,21 +17,32 @@
 - **[Módulo 6: Testing y Debugging](midLevel_3/README.md)** - Jest, Testing Library, debugging
 - **[Módulo 7: Patrones de Diseño](midLevel_4/README.md)** - Patrones creacionales, estructurales, comportamentales
 - **[Módulo 8: Expo y Desarrollo Rápido](midLevel_5/README.md)** - Expo SDK, herramientas, servicios, publicación
+- **[Módulo 9: UI-UX y Diseño de Interfaces](midLevel_6/README.md)** - Principios de diseño, accesibilidad, testing de usabilidad
 
 ---
 
 ## 🏆 Nivel Senior (Avanzado)
 
 ### 🟢 Módulos Completados
-- **[Módulo 8: Patrones de Diseño](senior_1/README.md)** - Patrones creacionales, estructurales, comportamentales
-- **[Módulo 9: Testing](senior_2/README.md)** - Testing unitario, integración, E2E, performance
-- **[Módulo 10: Performance](senior_3/README.md)** - Optimización, memoización, listas, imágenes, navegación
-- **[Módulo 11: APIs Nativas](senior_4/README.md)** - Módulos nativos, JavaScript Bridge, eventos, callbacks
-- **[Módulo 12: CI/CD y Deployment](senior_5/README.md)** - Pipelines, APK/AAB, Fastlane, despliegue automático
-- **[Módulo 13: Monitoreo y Analytics](senior_6/README.md)** - Crashlytics, performance monitoring, analytics
-- **[Módulo 14: Seguridad](senior_7/README.md)** - Autenticación, autorización, encriptación, protección de datos
-- **[Módulo 15: Testing Avanzado](senior_8/README.md)** - Testing unitario, integración, E2E, performance, CI/CD
-- **[Módulo 16: Arquitecturas Empresariales](senior_9/README.md)** - Micro-frontends, feature flags, multi-tenant, event-driven
+- **[Módulo 10: Patrones de Diseño](senior_1/README.md)** - Patrones creacionales, estructurales, comportamentales
+- **[Módulo 11: Testing](senior_2/README.md)** - Testing unitario, integración, E2E, performance
+- **[Módulo 12: Performance](senior_3/README.md)** - Optimización, memoización, listas, imágenes, navegación
+- **[Módulo 13: APIs Nativas](senior_4/README.md)** - Módulos nativos, JavaScript Bridge, eventos, callbacks
+- **[Módulo 14: CI/CD y Deployment](senior_5/README.md)** - Pipelines, APK/AAB, Fastlane, despliegue automático
+- **[Módulo 15: Monitoreo y Analytics](senior_6/README.md)** - Crashlytics, performance monitoring, analytics
+- **[Módulo 16: Seguridad](senior_7/README.md)** - Autenticación, autorización, encriptación, protección de datos
+- **[Módulo 17: Testing Avanzado](senior_8/README.md)** - Testing unitario, integración, E2E, performance, CI/CD
+- **[Módulo 18: Arquitecturas Empresariales](senior_9/README.md)** - Micro-frontends, feature flags, multi-tenant, event-driven
+- **[Módulo 19: Diseño de Sistemas y Componentes Reutilizables](senior_10/README.md)** - Design systems, atomic design, tokens, Storybook
+- **[Módulo 20: React Native Web y Multiplataforma](senior_11/README.md)** - React Native Web, Windows, macOS, code sharing
+- **[Módulo 21: Herramientas de Desarrollo Avanzadas](senior_12/README.md)** - Flipper, React DevTools, Metro, Hermes, profiling
+- **[Módulo 22: PWA y Funcionalidades Web Avanzadas](senior_13/README.md)** - Service workers, offline first, push notifications
+- **[Módulo 23: Machine Learning e IA en React Native](senior_14/README.md)** - TensorFlow Lite, computer vision, NLP, recomendaciones
+- **[Módulo 24: Compliance y Regulaciones](senior_15/README.md)** - GDPR, HIPAA, PCI DSS, SOC 2, auditorías
+- **[Módulo 25: Internacionalización y Localización](senior_16/README.md)** - i18n, localización, RTL, multi-idioma
+- **[Módulo 26: Analytics Avanzados y Business Intelligence](senior_17/README.md)** - Funnels, cohort analysis, BI dashboards
+- **[Módulo 27: Microservicios y Backend para Móvil](senior_18/README.md)** - GraphQL, serverless, message queues, microservicios
+- **[Módulo 28: Gaming y Realidad Aumentada](senior_19/README.md)** - Juegos, AR, sensores, optimización de rendimiento
 
 ---
 
@@ -60,9 +71,9 @@
 ## 🎯 Estado del Curso
 
 ### 📊 Progreso General
-- **Total de Módulos**: 17 ✅
+- **Total de Módulos**: 18 ✅
 - **Nivel Junior**: 3/3 módulos (100%) ✅ COMPLETADO
-- **Nivel Mid-Level**: 5/5 módulos (100%) ✅ COMPLETADO  
+- **Nivel Mid-Level**: 6/6 módulos (100%) ✅ COMPLETADO  
 - **Nivel Senior**: 9/9 módulos (100%) ✅ COMPLETADO
 
 ### 🏆 Estado del Curso
@@ -70,4 +81,4 @@
 
 ---
 
-*Última actualización: Módulo 8 (Expo) completado - Curso React Native completo con Expo*
+*Última actualización: Módulo 9 (UI-UX) completado - Curso React Native completo con UI-UX y Expo*
